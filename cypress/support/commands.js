@@ -48,8 +48,11 @@ Cypress.Commands.add('login', (user) => {
 Cypress.Commands.add('getUserRoles', (userRoles) => {
     const userRolesFile = 'user_roles.csv';
 
-    // Check the environment and append '_demo' to the role names if in demo environment
-    const environment = Cypress.env('environment') || 'prod';  // Default to 'prod' if no environment is specified
+    /*
+        Check the environment and remove  '_demo' from the role names if in 
+        demo environment
+    */
+    const environment = Cypress.env('environment') || 'prod';
     if (environment === 'demo') {
         userRoles = userRoles.map(role => role.replace('_demo', ''));
     }
@@ -81,8 +84,14 @@ Cypress.Commands.add('getUserRoles', (userRoles) => {
                         }, false);
                     });
 
-                    finalPermissions.any_permission = Object.values(finalPermissions).includes(true);
-
+                    
+                    finalPermissions.default_user = !(Object.values(finalPermissions).includes(true));
+                    finalPermissions.estimation_module = finalPermissions.estimation_view || 
+                                                         finalPermissions.pricing_view;
+                    finalPermissions.contract_module = finalPermissions.contract_view ||
+                                                       finalPermissions.milestone_view ||
+                                                       finalPermissions.purchase_order_view;
+                    cy.wrap(finalPermissions).as('userPermissions');
                     resolve(finalPermissions);
                 },
                 error: (err) => {
@@ -91,4 +100,11 @@ Cypress.Commands.add('getUserRoles', (userRoles) => {
             });
         });
     });
+});
+
+
+Cypress.Commands.add('clearSessionData', () => {
+    cy.clearAllCookies();
+    cy.clearAllLocalStorage();
+    cy.clearAllSessionStorage();
 });

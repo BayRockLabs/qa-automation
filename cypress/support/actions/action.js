@@ -3,8 +3,9 @@
  * Most functions return an instance of the Action class, allowing chaining of actions.
  */
 
-class Action {
+import "cypress-real-events";
 
+class Action {
     constructor() {
         this.element = null;
     }
@@ -46,6 +47,11 @@ class Action {
 
     should(...args){
         this.element.should(...args);
+        return this;
+    }
+
+    and(...args) {
+        this.element.and(...args);
         return this;
     }
 
@@ -153,20 +159,29 @@ class Action {
         return this;
     }
 
+    trigger(...args) {
+        this.element = this.element.trigger(...args);
+        return this;
+    }
+
     window(...args) {
         this.element = cy.window(...args);
         return this;
     }
 
-    clearAllCookies(...args) {
-        this.element = cy.clearAllCookies(...args);
+    clearSessionData() {
+        this.element = cy.clearSessionData();
+        return this;
     }
-    clearAllLocalStorage(...args) {
-        this.element = cy.clearAllLocalStorage(...args);
 
+    realHover(...args) {
+        this.element = this.element.realHover(...args);
+        return this;
     }
-    clearAllSessionStorage(...args) {
-        this.element = cy.clearAllSessionStorage(...args);
+
+    parent(...args){
+        this.element = this.element.parent(...args);
+        return this;
     }
 }
 

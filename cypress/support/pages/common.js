@@ -3,15 +3,12 @@
 import { Action } from '../actions/action';
 
 class Common {
+    noAccessTooltipMessage = 'You don\'t have access to this module';
     elements = {
-        addClientButton : () => this.action.get('button').contains('Add Client'),
-        addEstimationButton : () => this.action.get('button').contains('Add Estimation'),
-        addPricingButton : () => this.action.get('button').contains('Add Pricing'),
-        addContractButton : () => this.action.get('button').contains('Add Contract'),
-        addMilestoneButton : () => this.action.get('button').contains('Add Milestone'),
-        addPurchaseOrderButton : () => this.action.get('button').contains('Add Purchase Order'),
-        addAllocationButton : () => this.action.get('button').contains('Add Allocation'),
-        clientRecord: (clientName) => this.action.get('span').contains(clientName),
+        moduleNavigationFor : (moduleName) => this.action.get('div').contains(moduleName).parent(),
+        noAccessTooltip : () => this.action.get(`div[aria-label="${this.noAccessTooltipMessage}"]`),
+        buttonContaining : (buttonText) => this.action.get('button').contains(buttonText),
+        listingRecord: (labelName) => this.action.get('span').contains(labelName),
         effortEstimationNavigation: () => this.action.get('div').contains('Effort Estimation'),
         estimationNavigation: () => this.action.get('div').contains('Estimation'),
         pricingNavigation: () => this.action.get('div').contains('Pricing'),
@@ -25,7 +22,6 @@ class Common {
                                         .action
                                         .xpath(`//span[text()="${recordLabel}"]/ancestor::td/ancestor::tr//td//span//button`),
     };
-
     constructor() {
         this.action = new Action();
     }
@@ -34,44 +30,122 @@ class Common {
         this.action.visit('/dashboard');
     }
 
+    clickButtonContaining(buttonText) {
+        this
+            .elements
+            .buttonContaining(buttonText)
+            .click();
+    }
+
+    expectButtonVisible(buttonText) {
+        this
+            .elements
+            .buttonContaining(buttonText)
+            .should('exist')
+            .and('be.visible');
+    }
+
+    expectButtonToExist(buttonText) {
+        this
+            .elements
+            .buttonContaining(buttonText)
+            .should('exist');
+    }
+
+    expectButtonToNotExist(buttonText) {
+        this
+            .elements
+            .buttonContaining(buttonText)
+            .should('not.exist');
+    }
+
+    visitFirstEntryFromListing() {
+        this.action.get('tr').eq(1).click();
+    }
+
+    clickNavigationFor(moduleName) {
+        this
+            .elements
+            .moduleNavigationFor(moduleName)
+            .click();
+    }
+
+    expectNavigationEnabledFor(moduleName) {
+        this
+            .elements
+            .moduleNavigationFor(moduleName)
+            .should('have.css', 'opacity', '1');
+    }
+
+    expectNavigationDisabledFor(moduleName){
+        this
+            .elements
+            .moduleNavigationFor(moduleName)
+            .should('have.css', 'opacity', '0.5');
+    }
+
     visitEstimation(clientName) {
         this.visitDashboard();
-        this.elements.clientRecord(clientName).click();
+        if (clientName === ''){
+            this.action.get('tr').eq(1).click();
+        } else {
+            this.elements.clientRecord(clientName).click();
+        }
         this.elements.estimationNavigation().click();
         this.elements.effortEstimationNavigation().click();
     }
 
     visitPricing(clientName) {
         this.visitDashboard();
-        this.elements.clientRecord(clientName).click();
+        if(clientName === ''){
+            this.visitFirstEntryFromListing();
+        } else {
+            this.elements.clientRecord(clientName).click();
+        }
         this.elements.estimationNavigation().click();
         this.elements.pricingNavigation().click();
     }
 
     visitContracts(clientName) {
         this.visitDashboard();
-        this.elements.clientRecord(clientName).click();
+        if (clientName === ''){
+            this.visitFirstEntryFromListing();
+        } else {
+            this.elements.clientRecord(clientName).click();
+        }
         this.elements.sowContractNavigation().click();
         this.elements.contractsNavigation().click();
     }
 
     visitMilestone(clientName) {
         this.visitDashboard();
-        this.elements.clientRecord(clientName).click();
+        if (clientName === ''){
+            this.visitFirstEntryFromListing();
+        } else {
+            this.elements.clientRecord(clientName).click();
+        }        
         this.elements.sowContractNavigation().click();
         this.elements.milestoneNavigation().click();
     }
 
     visitPurchaseOrder(clientName) {
         this.visitDashboard();
-        this.elements.clientRecord(clientName).click();
+        if (clientName === ''){
+            this.visitFirstEntryFromListing();
+        } else {
+            this.elements.clientRecord(clientName).click();
+        }        
         this.elements.sowContractNavigation().click();
         this.elements.purchaseOrderNavigation().click();
     }
 
     visitAllocations(clientName) {
         this.visitDashboard();
-        this.elements.clientRecord(clientName).click();
+        if (clientName === ''){
+            this.visitFirstEntryFromListing();
+        } else {
+            this.elements.clientRecord(clientName).click();
+        }        
         this.elements.allocationNavigation().click();
     }
 
