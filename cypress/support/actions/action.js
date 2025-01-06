@@ -183,6 +183,16 @@ class Action {
         this.element = this.element.parent(...args);
         return this;
     }
+
+    invoke(...args){
+        this.element = this.element.invoke(...args);
+        return this;
+    }
+
+    once(...args){
+        this.element = cy.once(...args);
+        return this;
+    }
 }
 
 export { Action };

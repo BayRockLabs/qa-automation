@@ -5,7 +5,7 @@ import { Action } from '../actions/action';
 class Common {
     noAccessTooltipMessage = 'You don\'t have access to this module';
     elements = {
-        moduleNavigationFor : (moduleName) => this.action.get('div').contains(moduleName).parent(),
+        moduleNavigationFor : (moduleName) => cy.get('div').contains(moduleName),
         noAccessTooltip : () => this.action.get(`div[aria-label="${this.noAccessTooltipMessage}"]`),
         buttonContaining : (buttonText) => this.action.get('button').contains(buttonText),
         listingRecord: (labelName) => this.action.get('span').contains(labelName),
@@ -17,10 +17,18 @@ class Common {
         milestoneNavigation: () => this.action.get('div').contains('Milestones'),
         purchaseOrderNavigation: () => this.action.get('div').contains('Purchase Orders'),
         allocationNavigation: () => this.action.get('div').contains('Allocations'),
+        invoiceNavigation: () => this.action.get('div').contains('Invoices'),
         editButton: () => this.action.get('button').contains('Edit'),
+        clientRecord: (clientName) => this.action.get('span').contains(clientName),
         deleteButton: (recordLabel) => this
                                         .action
                                         .xpath(`//span[text()="${recordLabel}"]/ancestor::td/ancestor::tr//td//span//button`),
+        invoiceIcons : {
+            regenerate : () => this.action.get('[data-testid="CachedOutlinedIcon"]'),
+            email : () => this.action.get('[data-testid="EmailOutlinedIcon"]'),
+            markAsPaid : () => this.action.get('[data-testid="CheckCircleOutlineOutlinedIcon"]'),
+            download : () => this.action.get('[data-testid="DownloadIcon"]')
+        }
     };
     constructor() {
         this.action = new Action();
@@ -71,17 +79,55 @@ class Common {
     }
 
     expectNavigationEnabledFor(moduleName) {
-        this
-            .elements
-            .moduleNavigationFor(moduleName)
-            .should('have.css', 'opacity', '1');
+        const multiLevelNavigationItems = [
+            'Effort Estimation',
+            'Estimation',
+            'Pricing',
+            'SOWContract',
+            'Milestones',
+            'Contracts',
+            'Purchase Orders',
+        ]
+        if (multiLevelNavigationItems.includes(moduleName)) {
+            this
+                .elements
+                .moduleNavigationFor(moduleName).parent()
+                .should('have.css', 'opacity', '1');
+        } else {
+            this
+                .elements
+                .moduleNavigationFor(moduleName)
+                .should('have.attr', 'style')
+                .and('contain', 'opacity: 1');
+        }
     }
 
     expectNavigationDisabledFor(moduleName){
-        this
-            .elements
-            .moduleNavigationFor(moduleName)
-            .should('have.css', 'opacity', '0.5');
+        const multiLevelNavigationItems = [
+            'Effort Estimation',
+            'Estimation',
+            'Pricing',
+            'SOWContract',
+            'Milestones',
+            'Contracts',
+            'Purchase Orders',
+        ]
+        if (multiLevelNavigationItems.includes(moduleName)) {
+            this
+                .elements
+                .moduleNavigationFor(moduleName).parent()
+                .should('have.css', 'opacity', '0.5');
+        } else {
+            this
+                .elements
+                .moduleNavigationFor(moduleName)
+                .invoke('attr', 'style') // Retrieve the style attribute as a string
+                .then((style) => {
+                    cy.log(style)
+                    expect(style).to.include('opacity: 0.5'); // Assert the opacity value
+                    // expect(style).to.include('pointer-events: none'); // Assert the pointer-events value
+                });
+        }
     }
 
     visitEstimation(clientName) {
@@ -149,8 +195,32 @@ class Common {
         this.elements.allocationNavigation().click();
     }
 
+    visitInvoices(clientName) {
+        this.visitDashboard();
+        if (clientName === '') {
+            this.visitFirstEntryFromListing();
+        } else {
+            this.elements.clientRecord(clientName).click();
+        }
+        this.elements.invoiceNavigation().click();
+    }
+
     expectUrlToContain(url) {
         this.action.url().should('contain', url);
+    }
+
+    expectInvoiceIconsEnabled() {
+        this.elements.invoiceIcons.regenerate().scrollIntoView().should('be.visible');
+        this.elements.invoiceIcons.email().scrollIntoView().should('be.visible');
+        this.elements.invoiceIcons.download().scrollIntoView().should('be.visible');
+        this.elements.invoiceIcons.markAsPaid().scrollIntoView().should('be.visible');
+    }
+
+    expectInvoiceIconsDisabled() {
+        this.elements.invoiceIcons.regenerate().should('not.exist');
+        this.elements.invoiceIcons.email().should('not.exist');
+        this.elements.invoiceIcons.download().should('not.exist');
+        this.elements.invoiceIcons.markAsPaid().should('not.exist');
     }
 }
 
