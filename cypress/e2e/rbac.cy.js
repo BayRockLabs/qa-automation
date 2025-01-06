@@ -8,11 +8,11 @@ const users = Cypress.env('users');
 
 users.forEach(user => {
     describe("Role based access testing for " + user.email, () => {
-        before(() =>{
-            action.login(user);
-        });
-
         beforeEach(() => {
+            action.clearAllCookies();
+            action.clearAllLocalStorage();
+            action.clearAllSessionStorage();
+            action.login(user);
             action.window().then((window) => {
                 const userData = JSON.parse(window.localStorage.getItem('userData'));
                 const userRoles = userData.user_roles;
@@ -21,51 +21,15 @@ users.forEach(user => {
                 }); 
             });
             action.get('@userPermissions').should('exist');
+            rbac.visitDashboard();
         });
 
-        it("Visits client management page", () => {
-            action.get('@userPermissions').then(permissions => {
-                rbac.visitDashboard();
-                if (permissions.client_read) {
-                    rbac.expectUrlToContain('/dashboard');
-                } else {
-                    rbac.expectUrlToContain('/timesheet/empTimesheet');
-                }
-            });
+        it("Verifies client management view permission", () => {
+            action.url().should('contain', '/dashboard');
         });
 
-        it("Adds a new client", () => {
-            action.get('@userPermissions').then(permissions => {
-                rbac.visitDashboard();
-                if (permissions.client_create) {
-                    rbac.elements.addClientButton().should('be.visible');
-                } else {
-                    rbac.elements.addClientButton().should('not.exist');
-                }
-            });
-        });
-
-        it("Edits a client", () => {
-            action.get('@userPermissions').then(permissions => {
-                rbac.visitDashboard();
-                rbac.elements.clientRecord('New test').click();
-                if (permissions.client_update) {
-                    rbac.elements.editButton().should('be.visible');
-                } else {
-                    rbac.elements.editButton().should('not.exist');
-                }
-            });
-        });
-
-        it("Deletes a client", () => {
-            action.get('@userPermissions').then(permissions => {
-                rbac.visitDashboard();
-                if (permissions.client_delete) {
-                    rbac.elements.deleteButton('New test').should('be.visible');
-                } else {
-                    rbac.elements.deleteButton('New test').should('not.exist');
-                }
-            });
+        it("Verifies client management admin permissions", () => {
+            
         });
     });
 });

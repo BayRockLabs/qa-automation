@@ -123,8 +123,8 @@ class Action {
         }
     }
 
-    wrap(item) {
-        this.element = cy.wrap(item);
+    wrap(...args) {
+        this.element = cy.wrap(...args);
         return this;
     }
 
@@ -157,7 +157,17 @@ class Action {
         this.element = cy.window(...args);
         return this;
     }
-    
+
+    clearAllCookies(...args) {
+        this.element = cy.clearAllCookies(...args);
+    }
+    clearAllLocalStorage(...args) {
+        this.element = cy.clearAllLocalStorage(...args);
+
+    }
+    clearAllSessionStorage(...args) {
+        this.element = cy.clearAllSessionStorage(...args);
+    }
 }
 
 export { Action };
