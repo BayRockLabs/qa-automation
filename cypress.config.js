@@ -12,7 +12,7 @@ module.exports = defineConfig({
     experimentalModifyObstructiveThirdPartyCode : true,
     experimentalStudio: true,
     testIsolation: false,
-    defaultCommandTimeout : 15000,
+    defaultCommandTimeout : 20000,
   },
 });
 

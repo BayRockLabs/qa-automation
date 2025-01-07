@@ -4,7 +4,7 @@ import { Common } from '../support/pages/common';
 
 const rbac = new Common();
 const users = Cypress.env('users');
-const url = {
+const urls = {
     dashboard: '/dashboard',
     timesheet: '/timesheet/empTimesheet',
     estimation: '/estimation',
@@ -37,14 +37,14 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.client_view) {
                     rbac.visitDashboard();
-                    rbac.expectUrlToContain(url.dashboard);
+                    rbac.expectUrlToContain(urls.dashboard);
                     if(permissions.client_admin) {
                         rbac.expectButtonVisible('Add Client');
                     } else {
                         rbac.expectButtonToNotExist('Add Client');
                     }
                 } else if (permissions.default_user) {
-                    rbac.expectUrlToContain(url.timesheet);
+                    rbac.expectUrlToContain(urls.timesheet);
                 }
             })
         });
@@ -53,7 +53,7 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.estimation_view) {
                     rbac.visitEstimation('');
-                    rbac.expectUrlToContain(url.estimation);
+                    rbac.expectUrlToContain(urls.estimation);
                     if(permissions.estimation_admin) {
                         rbac.expectButtonVisible('Add Estimation');
                     } else {
@@ -62,15 +62,15 @@ users.forEach(user => {
                 } else {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
-                        rbac.expectUrlToContain(url.timesheet);
+                        rbac.expectUrlToContain(urls.timesheet);
                     } else if (!permissions.estimation_module){
                         rbac.visitDashboard();
-                        rbac.expectUrlToContain(url.dashboard);
+                        rbac.expectUrlToContain(urls.dashboard);
                         rbac.visitFirstEntryFromListing();
                         rbac.expectNavigationDisabledFor('Estimation');
                     } else {
                         rbac.visitDashboard();
-                        rbac.expectUrlToContain(url.dashboard);
+                        rbac.expectUrlToContain(urls.dashboard);
                         rbac.visitFirstEntryFromListing();
                         rbac.clickNavigationFor('Estimation');
                         rbac.expectNavigationDisabledFor('Effort Estimation');
@@ -83,7 +83,7 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.pricing_view) {
                     rbac.visitPricing('');
-                    rbac.expectUrlToContain(url.pricing);
+                    rbac.expectUrlToContain(urls.pricing);
                     if (permissions.pricing_admin) {
                         rbac.expectButtonToExist('Add Pricing');
                     } else {
@@ -92,14 +92,14 @@ users.forEach(user => {
                 } else {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
-                        rbac.expectUrlToContain(url.timesheet);
+                        rbac.expectUrlToContain(urls.timesheet);
                     } else if (!permissions.estimation_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
                         rbac.expectNavigationDisabledFor('Estimation');
                     } else {
                         rbac.visitDashboard();
-                        rbav.visitFirstEntryFromListing();
+                        rbac.visitFirstEntryFromListing();
                         rbac.clickNavigationFor('Estimation');
                         rbac.expectNavigationDisabledFor('Pricing');
                     }
@@ -111,7 +111,7 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.contract_view){
                     rbac.visitContracts('');
-                    rbac.expectUrlToContain(url.contract);
+                    rbac.expectUrlToContain(urls.contract);
                     if (permissions.contract_admin) {
                         rbac.expectButtonToExist('Add Contract');
                     } else {
@@ -120,7 +120,7 @@ users.forEach(user => {
                 } else {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
-                        rbav.expectUrlToContain(url.timesheet);
+                        rbac.expectUrlToContain(urls.timesheet);
                     } else if (!permissions.contract_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -129,7 +129,7 @@ users.forEach(user => {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
                         rbac.clickNavigationFor('SOWContract');
-                        rbav.expectNavigationDisabledFor('Contracts');
+                        rbac.expectNavigationDisabledFor('Contracts');
                     }
                 }
             })
@@ -139,7 +139,7 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.milestone_view) {
                     rbac.visitMilestone('');
-                    rbac.expectUrlToContain(url.milestone);
+                    rbac.expectUrlToContain(urls.milestone);
                     if (permissions.milestone_admin) {
                         rbac.expectButtonToExist('Add Milestone');
                     } else {
@@ -148,7 +148,7 @@ users.forEach(user => {
                 } else {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
-                        rbav.expectUrlToContain(url.timesheet);
+                        rbac.expectUrlToContain(urls.timesheet);
                     } else if (!permissions.contract_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -167,7 +167,7 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.purchase_order_view) {
                     rbac.visitPurchaseOrder('');
-                    rbac.expectUrlToContain(url.purchaseOrder);
+                    rbac.expectUrlToContain(urls.purchaseOrder);
                     if (permissions.purchase_order_admin) {
                         rbac.expectButtonToExist('Add Purchase Order');
                         rbac.expectButtonToExist('Assign Purchase Order');
@@ -178,7 +178,7 @@ users.forEach(user => {
                 } else {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
-                        rbav.expectUrlToContain(url.timesheet);
+                        rbac.expectUrlToContain(urls.timesheet);
                     } else if (!permissions.contract_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -197,7 +197,7 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.allocation_view) {
                     rbac.visitAllocations('');
-                    rbac.expectUrlToContain(url.allocation);
+                    rbac.expectUrlToContain(urls.allocation);
                     if (permissions.allocation_admin) {
                         rbac.expectButtonToExist('Add Allocation');
                     } else {
@@ -206,7 +206,7 @@ users.forEach(user => {
                 } else {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
-                        rbav.expectUrlToContain(url.timesheet);
+                        rbac.expectUrlToContain(urls.timesheet);
                     } else {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -220,7 +220,7 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.invoice_view) {
                     rbac.visitInvoices('');
-                    rbac.expectUrlToContain(url.invoice);
+                    rbac.expectUrlToContain(urls.invoice);
                     if (permissions.allocation_admin) {
                         rbac.expectInvoiceIconsEnabled();
                     } else {
@@ -229,7 +229,7 @@ users.forEach(user => {
                 } else {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
-                        rbav.expectUrlToContain(url.timesheet);
+                        rbac.expectUrlToContain(urls.timesheet);
                     } else {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();

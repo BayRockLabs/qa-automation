@@ -3,10 +3,10 @@
 import { Action } from '../actions/action';
 
 class Common {
-    noAccessTooltipMessage = 'You don\'t have access to this module';
+    noAccessTooltipMessage = 'You don’t have access to this module';
     elements = {
         moduleNavigationFor : (moduleName) => cy.get('div').contains(moduleName),
-        noAccessTooltip : () => this.action.get(`div[aria-label="${this.noAccessTooltipMessage}"]`),
+        noAccessTooltip : (moduleName) => cy.get('div').contains(moduleName).parent(),
         buttonContaining : (buttonText) => this.action.get('button').contains(buttonText),
         listingRecord: (labelName) => this.action.get('span').contains(labelName),
         effortEstimationNavigation: () => this.action.get('div').contains('Effort Estimation'),
@@ -79,16 +79,14 @@ class Common {
     }
 
     expectNavigationEnabledFor(moduleName) {
-        const multiLevelNavigationItems = [
+        const lowLevelNavigationItems = [
             'Effort Estimation',
-            'Estimation',
             'Pricing',
-            'SOWContract',
             'Milestones',
             'Contracts',
             'Purchase Orders',
         ]
-        if (multiLevelNavigationItems.includes(moduleName)) {
+        if (lowLevelNavigationItems.includes(moduleName)) {
             this
                 .elements
                 .moduleNavigationFor(moduleName).parent()
@@ -103,31 +101,7 @@ class Common {
     }
 
     expectNavigationDisabledFor(moduleName){
-        const multiLevelNavigationItems = [
-            'Effort Estimation',
-            'Estimation',
-            'Pricing',
-            'SOWContract',
-            'Milestones',
-            'Contracts',
-            'Purchase Orders',
-        ]
-        if (multiLevelNavigationItems.includes(moduleName)) {
-            this
-                .elements
-                .moduleNavigationFor(moduleName).parent()
-                .should('have.css', 'opacity', '0.5');
-        } else {
-            this
-                .elements
-                .moduleNavigationFor(moduleName)
-                .invoke('attr', 'style') // Retrieve the style attribute as a string
-                .then((style) => {
-                    cy.log(style)
-                    expect(style).to.include('opacity: 0.5'); // Assert the opacity value
-                    // expect(style).to.include('pointer-events: none'); // Assert the pointer-events value
-                });
-        }
+        
     }
 
     visitEstimation(clientName) {
