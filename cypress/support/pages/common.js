@@ -5,8 +5,8 @@ import { Action } from '../actions/action';
 class Common {
     noAccessTooltipMessage = 'You don’t have access to this module';
     elements = {
-        moduleNavigationFor : (moduleName) => cy.get('div').contains(moduleName),
-        noAccessTooltip : (moduleName) => cy.get('div').contains(moduleName).parent(),
+        moduleNavigationFor : (moduleName) => this.action.get('div').contains(moduleName),
+        noAccessTooltip : (moduleName) => this.action.get('div').contains(moduleName).parent(),
         buttonContaining : (buttonText) => this.action.get('button').contains(buttonText),
         listingRecord: (labelName) => this.action.get('span').contains(labelName),
         effortEstimationNavigation: () => this.action.get('div').contains('Effort Estimation'),
@@ -101,7 +101,11 @@ class Common {
     }
 
     expectNavigationDisabledFor(moduleName){
-        
+        this
+            .elements
+            .moduleNavigationFor(moduleName)
+            .click({force: true});
+        this.expectUrlToContain('/client/detail')
     }
 
     visitEstimation(clientName) {
