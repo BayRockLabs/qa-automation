@@ -46,7 +46,7 @@ users.forEach(user => {
                 rbac.action.getUserRoles(userRoles);
             })
             rbac.action.get('@userPermissions').should('exist');
-        })     
+        })
 
         it("Verifies Client Management access permissions", () => {
             rbac.action.get('@userPermissions').then((permissions) => {
@@ -255,7 +255,7 @@ users.forEach(user => {
         })
 
         it("Verifies Timesheet access permissions", () => {
-            rbac.action.get('@userPermissions', () => {
+            rbac.action.get('@userPermissions').then((permissions) => {
                 if (permissions.timesheet_view) {
                     rbac.visitTimesheets();
                     rbac.expectUrlToContain(urls.timesheet);

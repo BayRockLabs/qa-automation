@@ -6,7 +6,7 @@ class Common {
     noAccessTooltipMessage = 'You don’t have access to this module';
     elements = {
         moduleNavigationFor : (moduleName) => this.action.get('div').contains(moduleName),
-        noAccessTooltip : (moduleName) => this.action.get('div').contains(moduleName).parent(),
+        noAccessTooltip : (moduleName) => this.action.get('.MuiTooltip-tooltip'),
         buttonContaining : (buttonText) => this.action.get('button').contains(buttonText),
         listingRecord: (labelName) => this.action.get('span').contains(labelName),
         effortEstimationNavigation: () => this.action.get('div').contains('Effort Estimation'),
@@ -82,8 +82,12 @@ class Common {
         this
             .elements
             .moduleNavigationFor(moduleName)
-            .click({force: true});
-        this.expectUrlToContain('/client/detail');
+            .trigger('mouseover', {force: true});
+        this
+            .elements
+            .noAccessTooltip()
+            .should('be.visible')
+            .and('have.text', this.noAccessTooltipMessage);
     }
 
     visitInsights() {
