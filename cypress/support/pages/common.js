@@ -78,28 +78,6 @@ class Common {
             .click();
     }
 
-    expectNavigationEnabledFor(moduleName) {
-        const lowLevelNavigationItems = [
-            'Effort Estimation',
-            'Pricing',
-            'Milestones',
-            'Contracts',
-            'Purchase Orders',
-        ]
-        if (lowLevelNavigationItems.includes(moduleName)) {
-            this
-                .elements
-                .moduleNavigationFor(moduleName).parent()
-                .should('have.css', 'opacity', '1');
-        } else {
-            this
-                .elements
-                .moduleNavigationFor(moduleName)
-                .should('have.attr', 'style')
-                .and('contain', 'opacity: 1');
-        }
-    }
-
     expectNavigationDisabledFor(moduleName){
         this
             .elements
