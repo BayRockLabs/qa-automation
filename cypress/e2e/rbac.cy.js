@@ -4,8 +4,23 @@ import { Common } from '../support/pages/common';
 
 const rbac = new Common();
 const users = Cypress.env('users');
+const navigationItems = {
+    dashbaord: 'Dashboard',
+    clientManagement: 'Client Management',
+    estimation: 'Estimation',
+    pricing: 'Pricing',
+    effortEstimation: 'Effort Estimation',
+    sowContract: 'SOWContract',
+    contract: 'Contracts',
+    milestone: 'Milestones',
+    purchaseOrder: 'Purchase Orders',
+    invoice: 'Invoices',
+    allocation: 'Allocations',
+};
+
 const urls = {
-    dashboard: '/dashboard',
+    insights : '/dashboardpage',
+    dashboard : '/dashboard',
     timesheet: '/timesheet/empTimesheet',
     estimation: '/estimation',
     pricing : '/pricing',
@@ -234,6 +249,43 @@ users.forEach(user => {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
                         rbac.expectNavigationDisabledFor('Invoices');
+                    }
+                }
+            })
+        })
+
+        it("Verifies Timesheet access permissions", () => {
+            if (permissions.timesheet_view) {
+                rbac.visitTimesheets();
+                rbac.expectUrlToContain(urls.timesheet);
+                if(permissions.timesheet_manager) {
+                    rbac.expectButtonVisible('Manager View');
+                } else {
+                    rbac.expectButtonToNotExist('Manager View');
+                }
+            } else {
+                if (permissions.default_user) {
+                    rbac.visitDashboard();
+                    rbac.expectUrlToContain(urls.timesheet);
+                } else {
+                    rbac.visitDashboard();
+                    rbac.expectNavigationDisabledFor('Timesheets');
+                }
+            }
+        })
+
+        it("Verifies Dashboard access permissions", () => {
+            rbac.action.get('@userPermissions').then((permissions) => {
+                if (permissions.dashboard_view) {
+                    rbac.visitInsights();
+                    rbac.expectUrlToContain(urls.insights)
+                } else {
+                    if (permissions.default_user) {
+                        rbac.visitDashboard();
+                        rbac.expectUrlToContain(urls.timesheet);
+                    } else {
+                        rbac.visitDashboard();
+                        rbac.expectNavigationDisabledFor('Dashboard');
                     }
                 }
             })

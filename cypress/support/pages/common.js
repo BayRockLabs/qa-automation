@@ -105,7 +105,11 @@ class Common {
             .elements
             .moduleNavigationFor(moduleName)
             .click({force: true});
-        this.expectUrlToContain('/client/detail')
+        this.expectUrlToContain('/client/detail');
+    }
+
+    visitInsights() {
+        this.action.visit('/dashboardpage');
     }
 
     visitEstimation(clientName) {
@@ -181,6 +185,14 @@ class Common {
             this.elements.clientRecord(clientName).click();
         }
         this.elements.invoiceNavigation().click();
+    }
+
+    visitTimesheets() {
+        this.visitDashboard();
+        this
+            .elements
+            .moduleNavigationFor('Timesheets')
+            .click();
     }
 
     expectUrlToContain(url) {
