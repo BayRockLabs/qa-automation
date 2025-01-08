@@ -255,23 +255,25 @@ users.forEach(user => {
         })
 
         it("Verifies Timesheet access permissions", () => {
-            if (permissions.timesheet_view) {
-                rbac.visitTimesheets();
-                rbac.expectUrlToContain(urls.timesheet);
-                if(permissions.timesheet_manager) {
-                    rbac.expectButtonVisible('Manager View');
-                } else {
-                    rbac.expectButtonToNotExist('Manager View');
-                }
-            } else {
-                if (permissions.default_user) {
-                    rbac.visitDashboard();
+            rbac.action.get('@userPermissions', () => {
+                if (permissions.timesheet_view) {
+                    rbac.visitTimesheets();
                     rbac.expectUrlToContain(urls.timesheet);
+                    if(permissions.timesheet_manager) {
+                        rbac.expectButtonVisible('Manager View');
+                    } else {
+                        rbac.expectButtonToNotExist('Manager View');
+                    }
                 } else {
-                    rbac.visitDashboard();
-                    rbac.expectNavigationDisabledFor('Timesheets');
+                    if (permissions.default_user) {
+                        rbac.visitDashboard();
+                        rbac.expectUrlToContain(urls.timesheet);
+                    } else {
+                        rbac.visitDashboard();
+                        rbac.expectNavigationDisabledFor('Timesheets');
+                    }
                 }
-            }
+            })
         })
 
         it("Verifies Dashboard access permissions", () => {
@@ -291,6 +293,8 @@ users.forEach(user => {
             })
         })
 
-        it("Verifies ")
+        it("Verifies Resource Metrics access permissions", () => {
+            
+        })
     })
 })

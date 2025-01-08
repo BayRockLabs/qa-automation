@@ -15,6 +15,7 @@
   },
   "scripts": {
     "cy:open": "cypress open",
-    "cy:run": "cypress run --browser chrome"
+    "e2e:chrome": "cypress run --browser chrome",
+    "e2e:rbac": "cypress run --browser chrome --spec cypress/e2e/rbac.cy.js"
   }
 }
