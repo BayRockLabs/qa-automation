@@ -1,22 +1,7 @@
-import { Action } from '../support/actions/action';
-import { ClientManagement } from '../support/pages/client_management';
 import { Common } from '../support/pages/common';
 
 const rbac = new Common();
 const users = Cypress.env('users');
-const navigationItems = {
-    dashbaord: 'Dashboard',
-    clientManagement: 'Client Management',
-    estimation: 'Estimation',
-    pricing: 'Pricing',
-    effortEstimation: 'Effort Estimation',
-    sowContract: 'SOWContract',
-    contract: 'Contracts',
-    milestone: 'Milestones',
-    purchaseOrder: 'Purchase Orders',
-    invoice: 'Invoices',
-    allocation: 'Allocations',
-};
 
 const urls = {
     insights : '/dashboardpage',
@@ -36,6 +21,7 @@ users.forEach(user => {
 
         before(() => {
             rbac.action.clearSessionData();
+            
             rbac.action.login(user);
         })
             

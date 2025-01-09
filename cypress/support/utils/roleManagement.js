@@ -3,11 +3,9 @@
 const tenantId = Cypress.env("tenantId");
 const clientId = Cypress.env("clientId");
 const clientSecret = Cypress.env("clientSecret");
+const authority = `${Cypress.env('authBaseUrl')}/${tenantId}}/oauth2/v2.0/token`;
+const graphBaseUrl = Cypress.env('graphBaseUrl');
 
-const authority = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-const graphBaseUrl = "https://graph.microsoft.com/v1.0";
-
-// Function to get an access token for Microsoft Graph API
 const getAccessToken = () => {
     return cy.request({
         url: authority,
@@ -28,7 +26,7 @@ const getAccessToken = () => {
     });
 };
 
-// Function to fetch directory roles
+
 const fetchRoles = (accessToken) => {
     const rolesEndpoint = `${graphBaseUrl}/directoryRoles`;
 
