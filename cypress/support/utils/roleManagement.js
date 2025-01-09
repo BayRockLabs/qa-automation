@@ -37,11 +37,10 @@ const fetchRoles = (accessToken) => {
             Authorization: `Bearer ${accessToken}`,
         },
     }).then((response) => {
-        return response.body.value; // Returns a list of roles
+        return response.body.value; // returns a list of roles
     });
 };
 
-// Function to fetch user ID by username
 const fetchUserId = (accessToken, username) => {
     const userEndpoint = `${graphBaseUrl}/users/${username}`;
 
@@ -52,11 +51,11 @@ const fetchUserId = (accessToken, username) => {
             Authorization: `Bearer ${accessToken}`,
         },
     }).then((response) => {
-        return response.body.id; // Returns the user ID
+        return response.body.id;
     });
 };
 
-// Function to assign a role to a user
+
 const assignRoleToUser = (accessToken, roleId, userId) => {
     const roleMembersEndpoint = `${graphBaseUrl}/directoryRoles/${roleId}/members/$ref`;
 
@@ -79,8 +78,6 @@ const assignRoleToUser = (accessToken, roleId, userId) => {
     });
 };
 
-
-// Step 4: Delete Role Assignment
 const deleteRoleFromUser = (accessToken, roleId, userId) => {
     const deleteEndpoint = `${graphBaseUrl}/directoryRoles/${roleId}/members/${userId}/$ref`;
 
@@ -101,16 +98,14 @@ const deleteRoleFromUser = (accessToken, roleId, userId) => {
 
 export const assignRole = (username, roleName) => {
     getAccessToken().then((accessToken) => {
-        // Fetch the list of roles
+
         fetchRoles(accessToken).then((roles) => {
             const role = roles.find((r) => r.displayName === roleName);
             if (!role) {
                 throw new Error(`Role ${roleName} not found.`);
             }
 
-            // Fetch the user ID
             fetchUserId(accessToken, username).then((userId) => {
-                // Assign the role to the user
                 assignRoleToUser(accessToken, role.id, userId);
             });
         });
@@ -119,9 +114,7 @@ export const assignRole = (username, roleName) => {
 
 export const removeRole = (username, roleName) => {
     getAccessToken().then((accessToken) => {
-        // Get Role ID
         getRoleId(accessToken, roleName).then((roleId) => {
-            // Get User ID
             const userEndpoint = `${graphBaseUrl}/users/${username}`;
             cy.request({
                 method: "GET",
@@ -131,8 +124,6 @@ export const removeRole = (username, roleName) => {
                 },
             }).then((userResponse) => {
                 const userId = userResponse.body.id;
-
-                // Delete Role Assignment
                 deleteRoleFromUser(accessToken, roleId, userId);
             });
         });
