@@ -1,7 +1,6 @@
-import { login } from 'cypress/support/utils/auth'
+import { login } from './utils/auth';
 import Papa from 'papaparse';
-import { assignRole, removeRole } from 'cypress/support/utils/roleManagement';
-
+import { assignRole, removeRole } from './utils/roleManagement';
 
 Cypress.Commands.add('login', (user) => {
     return login(user);

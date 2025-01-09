@@ -1,4 +1,5 @@
 import { Common } from '../support/pages/common';
+import { assignRole, removeRole } from '../support/utils/roleManagement';
 
 const rbac = new Common();
 const users = Cypress.env('users');
@@ -32,6 +33,10 @@ users.forEach(user => {
                 rbac.action.getUserRoles(userRoles);
             })
             rbac.action.get('@userPermissions').should('exist');
+        })
+
+        it.only("Assigns super_admin to me", () => {
+            assignRole('jasjaap.s@bayrocklabs.com', 'c2c_super_admin_demo');
         })
 
         it("Verifies Client Management access permissions", () => {
