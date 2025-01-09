@@ -35,10 +35,6 @@ users.forEach(user => {
             rbac.action.get('@userPermissions').should('exist');
         })
 
-        it.only("Assigns super_admin to me", () => {
-            removeRole('jasjaap.s@bayrocklabs.com', 'c2c_super_admin_demo');
-        })
-
         it("Verifies Client Management access permissions", () => {
             rbac.action.get('@userPermissions').then((permissions) => {
                 if(permissions.client_view) {
