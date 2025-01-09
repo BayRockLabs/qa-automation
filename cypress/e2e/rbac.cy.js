@@ -36,7 +36,7 @@ users.forEach(user => {
         })
 
         it.only("Assigns super_admin to me", () => {
-            assignRole('jasjaap.s@bayrocklabs.com', 'c2c_super_admin_demo');
+            removeRole('jasjaap.s@bayrocklabs.com', 'c2c_super_admin_demo');
         })
 
         it("Verifies Client Management access permissions", () => {

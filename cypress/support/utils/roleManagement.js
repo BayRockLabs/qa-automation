@@ -8,7 +8,7 @@ const graphBaseUrl = Cypress.env('graphBaseUrl');
 
 const getAccessToken = () => {
     return cy.request({
-        url:  authority + "/oauth2/v2.0/token",
+        url: authority + "/oauth2/v2.0/token",
         method: "POST",
         form: true,
         body: {
@@ -66,7 +66,7 @@ const getRoleAssignmentId = (accessToken, roleId, userId) => {
             $filter: `(principalId eq '${userId}' and roleDefinitionId eq '${roleId}')`
         },
         headers: {
-            Authorization: Bearer `${accessToken}`
+            Authorization: `Bearer ${accessToken}`
         }
     }).then((response) => {
         expect(response.body.value).to.have.lengthOf(1);
@@ -109,7 +109,7 @@ const deleteUnifiedRoleAssignment = (accessToken, roleAssignmentId) => {
         },
     }).then((response) => {
         if (response.status === 204) {
-            cy.log(`Successfully deleted role assignment for user: ${userId}`);
+            cy.log(`Successfully deleted role assignment.`);
         } else {
             throw new Error("Failed to delete role assignment.");
         }
@@ -133,18 +133,12 @@ export const assignRole = (username, roleName) => {
 
 export const removeRole = (username, roleName) => {
     getAccessToken().then((accessToken) => {
-        getRoleId(accessToken, roleName).then((roleId) => {
-            const userEndpoint = `${graphBaseUrl}/users/${username}`;
-            cy.request({
-                method: "GET",
-                url: userEndpoint,
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            }).then((userResponse) => {
-                const userId = userResponse.body.id;
-                deleteRoleFromUser(accessToken, roleId, userId);
-            });
-        });
-    });
-};
+        getRoleIdFromRoleName(accessToken, roleName).then((roleId) => {
+            fetchUserId(accessToken, username).then((userId) => {
+                getRoleAssignmentId(accessToken, roleId, userId).then((roleAssignmentId) => {
+                    deleteUnifiedRoleAssignment(accessToken, roleAssignmentId);
+                })
+            })
+        })
+    })
+}
