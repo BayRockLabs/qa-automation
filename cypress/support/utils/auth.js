@@ -177,6 +177,7 @@ const injectTokens = (tokenResponse) => {
 
 
 export const login = (user) => {
+	cy.clearSessionData();
 	username = user.email;
 	password = user.password;
 		return cy.visit("/login").request({
@@ -193,7 +194,11 @@ export const login = (user) => {
 			form: true
 		}).then((response) => {
 			injectTokens(response.body);
-		}).reload();
+			return cy.window().its('localStorage').then((localStorage) => {
+                const userData = JSON.parse(localStorage.getItem('userData'));
+                return userData.user_roles;
+            });
+		});
 };
 
 export const userData = (accessToken) => {

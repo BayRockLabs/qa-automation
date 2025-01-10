@@ -39,12 +39,13 @@ const getRoleIdFromRoleName = (accessToken, roleName) => {
             $filter: `displayName eq '${roleName}'`
         }
     }).then((response) => {
+        console.log('The response body value is' + response.body.value);
         expect(response.body.value).to.have.lengthOf(1);
         return response.body.value[0].id;
     });
 };
 
-const fetchUserId = (accessToken, username) => {
+const getUserId = (accessToken, username) => {
     const userEndpoint = `${graphBaseUrl}/users/${username}`;
     return cy.request({
         url: userEndpoint,
@@ -69,7 +70,6 @@ const getRoleAssignmentId = (accessToken, roleId, userId) => {
             Authorization: `Bearer ${accessToken}`
         }
     }).then((response) => {
-        expect(response.body.value).to.have.lengthOf(1);
         return response.body.value[0].id;
     })
 }
@@ -91,11 +91,7 @@ const createUnifiedRoleAssignment = (accessToken, roleId, userId) => {
             "directoryScopeId": "/"
         },
     }).then((response) => {
-        if (response.status === 201) {
-            cy.log(`Role successfully assigned to user with ID: ${userId}`);
-        } else {
-            cy.log("Failed to assign role:", response);
-        }
+        expect(response.status).to.equal(201);
     });
 };
 
@@ -108,23 +104,18 @@ const deleteUnifiedRoleAssignment = (accessToken, roleAssignmentId) => {
             Authorization: `Bearer ${accessToken}`,
         },
     }).then((response) => {
-        if (response.status === 204) {
-            cy.log(`Successfully deleted role assignment.`);
-        } else {
-            throw new Error("Failed to delete role assignment.");
-        }
+        expect(response.status).to.equal(204);
     });
 };
 
 export const assignRole = (username, roleName) => {
     getAccessToken().then((accessToken) => {
-
         getRoleIdFromRoleName(accessToken, roleName).then((roleId) => {
             if (!roleId) {
                 throw new Error(`Role ${roleName} not found.`);
             }
 
-            fetchUserId(accessToken, username).then((userId) => {
+            getUserId(accessToken, username).then((userId) => {
                 createUnifiedRoleAssignment(accessToken, roleId, userId);
             });
         });
@@ -134,10 +125,43 @@ export const assignRole = (username, roleName) => {
 export const removeRole = (username, roleName) => {
     getAccessToken().then((accessToken) => {
         getRoleIdFromRoleName(accessToken, roleName).then((roleId) => {
-            fetchUserId(accessToken, username).then((userId) => {
+            if (!roleId) {
+                throw new Error(`Role ${roleName} not found.`);
+            }
+
+            getUserId(accessToken, username).then((userId) => {
                 getRoleAssignmentId(accessToken, roleId, userId).then((roleAssignmentId) => {
                     deleteUnifiedRoleAssignment(accessToken, roleAssignmentId);
                 })
+            })
+        })
+    })
+}
+
+
+const getAllRoleAssignments = (accessToken, userId) => {
+    const roleAssignmentEndpoint = `${graphBaseUrl}/roleManagement/directory/roleAssignments/`;
+    return cy.request({
+        url: roleAssignmentEndpoint,
+        method: "GET",
+        qs: {
+            $filter: `(principalId eq '${userId}')`
+        },
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    }).then((response) => {
+        return response.body.value;
+    })
+}
+
+export const removeAllUserRoles = (username) => {
+    getAccessToken().then((accessToken) => {
+        getUserId(accessToken, username).then((userId) => {
+            getAllRoleAssignments(accessToken, userId).then((roleAssignments) => {
+                roleAssignments.forEach((roleAssignment) => {
+                    deleteUnifiedRoleAssignment(accessToken, roleAssignment.id);
+                });
             })
         })
     })

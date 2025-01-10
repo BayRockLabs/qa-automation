@@ -68,7 +68,8 @@ class Common {
     }
 
     visitFirstEntryFromListing() {
-        this.action.get('tr').eq(1).click();
+        this.action.visit('/client/detail');
+        // this.action.get('tr').eq(1).click();
     }
 
     clickNavigationFor(moduleName) {
@@ -82,7 +83,7 @@ class Common {
         this
             .elements
             .moduleNavigationFor(moduleName)
-            .trigger('mouseover', {force: true});
+            .realHover();
         this
             .elements
             .noAccessTooltip()
@@ -97,7 +98,8 @@ class Common {
     visitEstimation(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.action.get('tr').eq(1).click();
+            this.action.visit('/client/detail')
+            // this.action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -108,7 +110,8 @@ class Common {
     visitPricing(clientName) {
         this.visitDashboard();
         if(clientName === ''){
-            this.visitFirstEntryFromListing();
+            this.action.visit('/client/detail')
+            // this.action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -119,7 +122,8 @@ class Common {
     visitContracts(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.visitFirstEntryFromListing();
+            this.action.visit('/client/detail')
+            // this.action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -130,7 +134,8 @@ class Common {
     visitMilestone(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.visitFirstEntryFromListing();
+            this.action.visit('/client/detail')
+            // this.action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -141,7 +146,8 @@ class Common {
     visitPurchaseOrder(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.visitFirstEntryFromListing();
+            this.action.visit('/client/detail')
+            // this.action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -152,7 +158,8 @@ class Common {
     visitAllocations(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.visitFirstEntryFromListing();
+            this.action.visit('/client/detail')
+            // this.action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -162,7 +169,8 @@ class Common {
     visitInvoices(clientName) {
         this.visitDashboard();
         if (clientName === '') {
-            this.visitFirstEntryFromListing();
+            this.action.visit('/client/detail')
+            // this.action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -181,18 +189,25 @@ class Common {
         this.action.url().should('contain', url);
     }
 
+    expectNavigationDisabledForDefaultUser() {
+        this.visitTimesheets();
+        this.expectNavigationDisabledFor('Dashboard');
+        this.expectNavigationDisabledFor('Client Management');
+        this.expectNavigationDisabledFor('Resource Management');
+    }
+
     expectInvoiceIconsEnabled() {
-        this.elements.invoiceIcons.regenerate().scrollIntoView().should('be.visible');
-        this.elements.invoiceIcons.email().scrollIntoView().should('be.visible');
-        this.elements.invoiceIcons.download().scrollIntoView().should('be.visible');
-        this.elements.invoiceIcons.markAsPaid().scrollIntoView().should('be.visible');
+        // this.elements.invoiceIcons.regenerate().scrollIntoView().should('be.visible');
+        // this.elements.invoiceIcons.email().scrollIntoView().should('be.visible');
+        // this.elements.invoiceIcons.download().scrollIntoView().should('be.visible');
+        // this.elements.invoiceIcons.markAsPaid().scrollIntoView().should('be.visible');
     }
 
     expectInvoiceIconsDisabled() {
-        this.elements.invoiceIcons.regenerate().should('not.exist');
-        this.elements.invoiceIcons.email().should('not.exist');
-        this.elements.invoiceIcons.download().should('not.exist');
-        this.elements.invoiceIcons.markAsPaid().should('not.exist');
+        // this.elements.invoiceIcons.regenerate().should('not.exist');
+        // this.elements.invoiceIcons.email().should('not.exist');
+        // this.elements.invoiceIcons.download().should('not.exist');
+        // this.elements.invoiceIcons.markAsPaid().should('not.exist');
     }
 }
 

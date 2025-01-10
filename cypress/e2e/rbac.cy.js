@@ -1,8 +1,8 @@
 import { Common } from '../support/pages/common';
-import { assignRole, removeRole } from '../support/utils/roleManagement';
 
 const rbac = new Common();
-const users = Cypress.env('users');
+const userCredentials = Cypress.env('user');
+const listOfRoles = Cypress.env('allowedRoleNames');
 
 const urls = {
     insights : '/dashboardpage',
@@ -17,23 +17,31 @@ const urls = {
     invoice : '/client/invoices',
 };
 
-users.forEach(user => {
-    describe(`Role based access testing for ${user.email}`, () => {
+listOfRoles.forEach((role) => {
+    describe(`Role based access testing for ${role}`, () => {
 
         before(() => {
-            rbac.action.clearSessionData();
-            
-            rbac.action.login(user);
+            rbac.action.removeAllUserRoles(userCredentials.email);
+            cy.waitForRoleUpdate('', true);
+            const adjustedRole = Cypress.env('environment') === 'demo'? role + '_demo' : role;
+            rbac.action.assignUserRole(userCredentials.email, adjustedRole);
+            cy.waitForRoleUpdate(adjustedRole, false);
         })
             
         beforeEach(() => {
             rbac.action.window().then((window) => {
                 const userData = JSON.parse(window.localStorage.getItem('userData'));
                 const userRoles = userData.user_roles;
-                rbac.action.getUserRoles(userRoles);
+                rbac.action.getUserPermissions(userRoles);
             })
             rbac.action.get('@userPermissions').should('exist');
         })
+
+        // it.only("Runs this test", () => {
+        //     cy.getUserRoles().then((userRoles) => {
+        //         expect(userRoles).to.include(role + '_demo');
+        //     })
+        // })
 
         it("Verifies Client Management access permissions", () => {
             rbac.action.get('@userPermissions').then((permissions) => {
@@ -46,10 +54,12 @@ users.forEach(user => {
                         rbac.expectButtonToNotExist('Add Client');
                     }
                 } else if (permissions.default_user) {
+                    rbac.visitDashboard();
                     rbac.expectUrlToContain(urls.timesheet);
+                    rbac.expectNavigationDisabledForDefaultUser();
                 }
             })
-        });
+        })
 
         it("Verifies Estimation access permissions", () => {
             rbac.action.get('@userPermissions').then((permissions) => {
@@ -65,6 +75,7 @@ users.forEach(user => {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else if (!permissions.estimation_module){
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.dashboard);
@@ -95,6 +106,7 @@ users.forEach(user => {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else if (!permissions.estimation_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -123,6 +135,7 @@ users.forEach(user => {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else if (!permissions.contract_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -151,6 +164,7 @@ users.forEach(user => {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else if (!permissions.contract_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -181,6 +195,7 @@ users.forEach(user => {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else if (!permissions.contract_module) {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -232,6 +247,7 @@ users.forEach(user => {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else {
                         rbac.visitDashboard();
                         rbac.visitFirstEntryFromListing();
@@ -255,6 +271,7 @@ users.forEach(user => {
                     if (permissions.default_user) {
                         rbac.visitDashboard();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else {
                         rbac.visitDashboard();
                         rbac.expectNavigationDisabledFor('Timesheets');
@@ -270,18 +287,32 @@ users.forEach(user => {
                     rbac.expectUrlToContain(urls.insights)
                 } else {
                     if (permissions.default_user) {
-                        rbac.visitDashboard();
+                        rbac.visitInsights();
                         rbac.expectUrlToContain(urls.timesheet);
+                        rbac.expectNavigationDisabledForDefaultUser();
                     } else {
-                        rbac.visitDashboard();
+                        rbac.visitTimesheets();
                         rbac.expectNavigationDisabledFor('Dashboard');
                     }
                 }
             })
         })
 
-        it("Verifies Resource Metrics access permissions", () => {
-            
+        it.skip("Verifies Resource Metrics access permissions", () => {
+            rbac.action.get('@userPermissions').then((permissions) => {
+                if (permissions.resource_metrics_view) {
+                    rbac.visitDashboard();
+                    rbac.expectUrlToContain(urls.resourceMetrics);
+                } else {
+                    if (permissions.default_user) {
+                        rbac.visitDashboard();
+                        rbac.expectUrlToContain(urls.timesheet);
+                    } else {
+                        rbac.visitDashboard();
+                        rbac.expectNavigationDisabledFor('Resource Metrics');
+                    }
+                }
+            })
         })
     })
 })

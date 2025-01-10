@@ -139,8 +139,12 @@ class Action {
         return this; 
     }
 
-    getUserRoles(...args) {
-        this.element = cy.getUserRoles(...args);
+    getUserRoles() {
+        return cy.getUserRoles();
+    }
+
+    getUserPermissions(...args) {
+        this.element = cy.getUserPermissions(...args);
         return this;
     }
 
@@ -192,6 +196,19 @@ class Action {
     once(...args){
         this.element = cy.once(...args);
         return this;
+    }
+
+    assignUserRole(email, role) {
+        this.element = cy.assignUserRole(email, role);
+        return this;
+    }
+
+    removeUserRole(email, role) {
+        cy.removeUserRole(email, role);
+    }
+
+    removeAllUserRoles(...args) {
+        cy.removeAllUserRoles(...args);
     }
 }
 

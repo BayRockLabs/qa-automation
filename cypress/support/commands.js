@@ -1,12 +1,12 @@
 import { login } from './utils/auth';
 import Papa from 'papaparse';
-import { assignRole, removeRole } from './utils/roleManagement';
+import { assignRole, removeRole, removeAllUserRoles } from './utils/roleManagement';
 
 Cypress.Commands.add('login', (user) => {
     return login(user);
 });
 
-Cypress.Commands.add('getUserRoles', (userRoles) => {
+Cypress.Commands.add('getUserPermissions', (userRoles) => {
     const userRolesFile = 'user_roles.csv';
 
     /*
@@ -16,6 +16,7 @@ Cypress.Commands.add('getUserRoles', (userRoles) => {
     const environment = Cypress.env('environment') || 'prod';
     if (environment === 'demo') {
         userRoles = userRoles.map(role => role.replace('_demo', ''));
+        console.log('current user roles:', userRoles);
     }
 
     return cy.fixture(userRolesFile).then((csvContent) => {
@@ -52,6 +53,7 @@ Cypress.Commands.add('getUserRoles', (userRoles) => {
                     finalPermissions.contract_module = finalPermissions.contract_view ||
                                                        finalPermissions.milestone_view ||
                                                        finalPermissions.purchase_order_view;
+                    finalPermission
                     cy.wrap(finalPermissions).as('userPermissions');
                     resolve(finalPermissions);
                 },
@@ -66,8 +68,31 @@ Cypress.Commands.add('getUserRoles', (userRoles) => {
 
 Cypress.Commands.add('clearSessionData', () => {
     cy.clearAllCookies();
+    cy.getAllCookies().should('be.empty');
     cy.clearAllLocalStorage();
+    cy.getAllLocalStorage().should('be.empty');
     cy.clearAllSessionStorage();
+    cy.getAllSessionStorage().should('be.empty');
+});
+
+Cypress.Commands.add('waitForRoleUpdate', (expectedRoles, removal = false, timeout = 20000, interval = 5000) => {
+    const startTime = Date.now();
+    const userCredentials = Cypress.env('user');
+    const checkRoles = () => {
+        return cy.login(userCredentials).then((userRoles) => {
+            cy.log(userRoles);
+            if (!removal && userRoles.includes(expectedRoles)) {
+                return cy.wrap(true);
+            } else if (removal && userRoles.length === 0) {
+                return cy.wrap(true);
+            }
+            if (Date.now() - startTime > timeout) {
+                throw new Error('Roles did not update in time');
+            }
+            cy.wait(interval).then(checkRoles);
+        });
+    };
+    return checkRoles();
 });
 
 Cypress.Commands.add('assignUserRole', (userEmail, userRole) => {
@@ -76,4 +101,14 @@ Cypress.Commands.add('assignUserRole', (userEmail, userRole) => {
 
 Cypress.Commands.add('removeUserRole', (userEmail, userRole) => {
     removeRole(userEmail, userRole);
+})
+
+Cypress.Commands.add('removeAllUserRoles', (username) => {
+    removeAllUserRoles(username);
+});
+
+Cypress.Commands.add('getUserRoles', () => {
+    cy.window().its('localStorage').then((localStorage) => {
+        return JSON.parse(localStorage.getItem('userData')).user_roles;
+    })
 })
