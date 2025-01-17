@@ -1,41 +1,38 @@
 /// <reference types="Cypress" />
 
-import { Action } from '../actions/action';
+import action from '../actions/action';
 
 class Common {
     noAccessTooltipMessage = 'You don’t have access to this module';
     elements = {
-        moduleNavigationFor : (moduleName) => this.action.get('div').contains(moduleName),
-        noAccessTooltip : (moduleName) => this.action.get('.MuiTooltip-tooltip'),
-        buttonContaining : (buttonText) => this.action.get('button').contains(buttonText),
-        listingRecord: (labelName) => this.action.get('span').contains(labelName),
-        effortEstimationNavigation: () => this.action.get('div').contains('Effort Estimation'),
-        estimationNavigation: () => this.action.get('div').contains('Estimation'),
-        pricingNavigation: () => this.action.get('div').contains('Pricing'),
-        sowContractNavigation: () => this.action.get('div').contains('SOWContract'),
-        contractsNavigation: () => this.action.get('div').contains('Contracts'),
-        milestoneNavigation: () => this.action.get('div').contains('Milestones'),
-        purchaseOrderNavigation: () => this.action.get('div').contains('Purchase Orders'),
-        allocationNavigation: () => this.action.get('div').contains('Allocations'),
-        invoiceNavigation: () => this.action.get('div').contains('Invoices'),
-        editButton: () => this.action.get('button').contains('Edit'),
-        clientRecord: (clientName) => this.action.get('span').contains(clientName),
+        moduleNavigationFor : (moduleName) => action.get('div').contains(moduleName),
+        noAccessTooltip : (moduleName) => action.get('.MuiTooltip-tooltip'),
+        buttonContaining : (buttonText) => action.get('button').contains(buttonText),
+        listingRecord: (labelName) => action.get('span').contains(labelName),
+        effortEstimationNavigation: () => action.get('div').contains('Effort Estimation'),
+        estimationNavigation: () => action.get('div').contains('Estimation'),
+        pricingNavigation: () => action.get('div').contains('Pricing'),
+        sowContractNavigation: () => action.get('div').contains('SOWContract'),
+        contractsNavigation: () => action.get('div').contains('Contracts'),
+        milestoneNavigation: () => action.get('div').contains('Milestones'),
+        purchaseOrderNavigation: () => action.get('div').contains('Purchase Orders'),
+        allocationNavigation: () => action.get('div').contains('Allocations'),
+        invoiceNavigation: () => action.get('div').contains('Invoices'),
+        editButton: () => action.get('button').contains('Edit'),
+        clientRecord: (clientName) => action.get('span').contains(clientName),
         deleteButton: (recordLabel) => this
                                         .action
                                         .xpath(`//span[text()="${recordLabel}"]/ancestor::td/ancestor::tr//td//span//button`),
         invoiceIcons : {
-            regenerate : () => this.action.get('[data-testid="CachedOutlinedIcon"]'),
-            email : () => this.action.get('[data-testid="EmailOutlinedIcon"]'),
-            markAsPaid : () => this.action.get('[data-testid="CheckCircleOutlineOutlinedIcon"]'),
-            download : () => this.action.get('[data-testid="DownloadIcon"]')
+            regenerate : () => action.get('[data-testid="CachedOutlinedIcon"]'),
+            email : () => action.get('[data-testid="EmailOutlinedIcon"]'),
+            markAsPaid : () => action.get('[data-testid="CheckCircleOutlineOutlinedIcon"]'),
+            download : () => action.get('[data-testid="DownloadIcon"]')
         }
     };
-    constructor() {
-        this.action = new Action();
-    }
-
+    
     visitDashboard() {
-        this.action.visit('/dashboard');
+        action.visit('/dashboard');
     }
 
     clickButtonContaining(buttonText) {
@@ -68,8 +65,8 @@ class Common {
     }
 
     visitFirstEntryFromListing() {
-        this.action.visit('/client/detail');
-        // this.action.get('tr').eq(1).click();
+        action.visit('/client/detail');
+        // action.get('tr').eq(1).click();
     }
 
     clickNavigationFor(moduleName) {
@@ -92,14 +89,14 @@ class Common {
     }
 
     visitInsights() {
-        this.action.visit('/dashboardpage');
+        action.visit('/dashboardpage');
     }
 
     visitEstimation(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.action.visit('/client/detail')
-            // this.action.get('tr').eq(1).click();
+            action.visit('/client/detail')
+            // action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -110,8 +107,8 @@ class Common {
     visitPricing(clientName) {
         this.visitDashboard();
         if(clientName === ''){
-            this.action.visit('/client/detail')
-            // this.action.get('tr').eq(1).click();
+            action.visit('/client/detail')
+            // action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -122,8 +119,8 @@ class Common {
     visitContracts(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.action.visit('/client/detail')
-            // this.action.get('tr').eq(1).click();
+            action.visit('/client/detail')
+            // action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -134,8 +131,8 @@ class Common {
     visitMilestone(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.action.visit('/client/detail')
-            // this.action.get('tr').eq(1).click();
+            action.visit('/client/detail')
+            // action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -146,8 +143,8 @@ class Common {
     visitPurchaseOrder(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.action.visit('/client/detail')
-            // this.action.get('tr').eq(1).click();
+            action.visit('/client/detail')
+            // action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -158,8 +155,8 @@ class Common {
     visitAllocations(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            this.action.visit('/client/detail')
-            // this.action.get('tr').eq(1).click();
+            action.visit('/client/detail')
+            // action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -169,8 +166,8 @@ class Common {
     visitInvoices(clientName) {
         this.visitDashboard();
         if (clientName === '') {
-            this.action.visit('/client/detail')
-            // this.action.get('tr').eq(1).click();
+            action.visit('/client/detail')
+            // action.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -186,7 +183,7 @@ class Common {
     }
 
     expectUrlToContain(url) {
-        this.action.url().should('contain', url);
+        action.url().should('contain', url);
     }
 
     expectNavigationDisabledForDefaultUser() {

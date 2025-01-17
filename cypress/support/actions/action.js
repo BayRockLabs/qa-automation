@@ -212,4 +212,5 @@ class Action {
     }
 }
 
-export { Action };
+const action = new Action
+export default action;

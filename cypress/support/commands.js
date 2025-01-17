@@ -53,8 +53,10 @@ Cypress.Commands.add('getUserPermissions', (userRoles) => {
                     finalPermissions.contract_module = finalPermissions.contract_view ||
                                                        finalPermissions.milestone_view ||
                                                        finalPermissions.purchase_order_view;
-                    finalPermission
-                    cy.wrap(finalPermissions).as('userPermissions');
+                    finalPermissions.client_management_module = finalPermissions.estimation_module ||
+                                                                finalPermissions.contract_module ||
+                                                                finalPermissions.allocation_view ||
+                                                                finalPermissions.invoice_view;
                     resolve(finalPermissions);
                 },
                 error: (err) => {
