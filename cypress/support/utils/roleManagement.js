@@ -39,7 +39,6 @@ const getRoleIdFromRoleName = (accessToken, roleName) => {
             $filter: `displayName eq '${roleName}'`
         }
     }).then((response) => {
-        console.log('The response body value is' + response.body.value);
         expect(response.body.value).to.have.lengthOf(1);
         return response.body.value[0].id;
     });

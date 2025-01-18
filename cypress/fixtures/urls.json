@@ -8,6 +8,8 @@
     "milestone": "client/contracts/milestone",
     "purchaseOrder": "/client/contracts/purchase-order",
     "allocation": "/client/allocations",
-    "invoice": "/client/invoices"
+    "invoice": "/client/invoices",
+    "clientDetail" : "/client/detail",
+    "resourceMetrics" : "/resources"
 }
   

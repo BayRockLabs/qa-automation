@@ -17,7 +17,6 @@ Cypress.Commands.add('getUserPermissions', (userRoles) => {
 
     if (environment === 'demo') {
         userRoles = userRoles.map(role => role.replace('_demo', ''));
-        console.log('current user roles:', userRoles);
     }
 
     return cy.fixture(userRolesFile).then((csvContent) => {
@@ -84,7 +83,6 @@ Cypress.Commands.add('waitForRoleUpdate', (expectedRoles, removal = false, timeo
     const userCredentials = Cypress.env('user');
     const checkRoles = () => {
         return cy.login(userCredentials).then((userRoles) => {
-            cy.log(userRoles);
             if (!removal && userRoles.includes(expectedRoles)) {
                 return cy.wrap(true);
             } else if (removal && userRoles.length === 0) {

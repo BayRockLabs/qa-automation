@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-class Common {
+class RoleBasedAccess {
     noAccessTooltipMessage = 'You don’t have access to this module';
     elements = {
         moduleNavigationFor : (moduleName) => cy.get('div').contains(moduleName),
@@ -28,9 +28,100 @@ class Common {
             download : () => cy.get('[data-testid="DownloadIcon"]')
         }
     };
+
+    constructor() {
+        this.urls = {};
+        this.permissions = {};
+    }
     
+    loadUrls() {
+        cy.fixture('urls.json').then((fixtureData) => {
+            cy.wrap(fixtureData).should('exist');
+            this.urls = fixtureData;
+        })
+    }
+
+    visitInsights() {
+        cy.visit(this.urls.insights);
+    }
+
     visitDashboard() {
-        cy.visit('/dashboard');
+        cy.visit(this.urls.dashboard);
+    }
+
+    assignRoleToUser(email, roleName) {
+        cy.assignUserRole(email, roleName);
+    }
+
+    removeAllUserRoles(email) {
+        cy.removeAllUserRoles(email);
+    }
+
+    waitForRoleUpdate(roleName, expectEmptyRoles) {
+        cy.waitForRoleUpdate(roleName, expectEmptyRoles);
+    }
+
+    getUserPermissionsFromRoles() {
+        cy.window().then((window) => {
+            const userData = JSON.parse(window.localStorage.getItem('userData'));
+            const userRoles = userData.user_roles;
+            cy.getUserPermissions(userRoles).then((userPermissions) => {
+                this.permissions = userPermissions;
+            })
+        })
+    }
+
+    visitEstimation(clientName) {
+        this.visitClientDetail(clientName);
+        this.elements.estimationNavigation().click();
+        this.elements.effortEstimationNavigation().click();
+    }
+
+    visitPricing(clientName) {
+        this.visitClientDetail(clientName);
+        this.elements.estimationNavigation().click();
+        this.elements.pricingNavigation().click();
+    }
+
+    visitContracts(clientName) {
+        this.visitClientDetail(clientName);
+        this.elements.sowContractNavigation().click();
+        this.elements.contractsNavigation().click();
+    }
+
+    visitMilestone(clientName) {
+        this.visitClientDetail(clientName);       
+        this.elements.sowContractNavigation().click();
+        this.elements.milestoneNavigation().click();
+    }
+
+    visitPurchaseOrder(clientName) {
+        this.visitClientDetail(clientName);     
+        this.elements.sowContractNavigation().click();
+        this.elements.purchaseOrderNavigation().click();
+    }
+
+    visitAllocations(clientName) {
+        this.visitClientDetail(clientName);    
+        this.elements.allocationNavigation().click();
+    }
+
+    visitInvoices(clientName) {
+        this.visitClientDetail(clientName);
+        this.elements.invoiceNavigation().click();
+    }
+
+    visitClientDetail(clientName) {
+        if (clientName) {
+            this.visitDashboard();
+            this.get('span').contains(clientName).click();
+        } else {
+            cy.visit(this.urls.clientDetail);
+        }
+    }
+
+    visitTimesheets() {
+        cy.visit(this.urls.timesheet);
     }
 
     clickButtonContaining(buttonText) {
@@ -62,11 +153,6 @@ class Common {
             .should('not.exist');
     }
 
-    visitFirstEntryFromListing() {
-        cy.visit('/client/detail');
-        // cy.get('tr').eq(1).click();
-    }
-
     clickNavigationFor(moduleName) {
         this
             .elements
@@ -75,107 +161,19 @@ class Common {
     }
 
     expectNavigationDisabledFor(moduleName){
+        // this
+        //     .elements
+        //     .moduleNavigationFor(moduleName)
+        //     .realHover();
+        // this
+        //     .elements
+        //     .noAccessTooltip()
+        //     .should('be.visible')
+        //     .and('have.text', this.noAccessTooltipMessage);
         this
             .elements
             .moduleNavigationFor(moduleName)
-            .invoke('show')
-            .realHover();
-            // .realHover();
-        this
-            .elements
-            .noAccessTooltip()
-            .should('be.visible')
-            .and('have.text', this.noAccessTooltipMessage);
-    }
-
-    visitInsights() {
-        cy.visit('/dashboardpage');
-    }
-
-    visitEstimation(clientName) {
-        this.visitDashboard();
-        if (clientName === ''){
-            cy.visit('/client/detail')
-            // cy.get('tr').eq(1).click();
-        } else {
-            this.elements.clientRecord(clientName).click();
-        }
-        this.elements.estimationNavigation().click();
-        this.elements.effortEstimationNavigation().click();
-    }
-
-    visitPricing(clientName) {
-        this.visitDashboard();
-        if(clientName === ''){
-            cy.visit('/client/detail')
-            // cy.get('tr').eq(1).click();
-        } else {
-            this.elements.clientRecord(clientName).click();
-        }
-        this.elements.estimationNavigation().click();
-        this.elements.pricingNavigation().click();
-    }
-
-    visitContracts(clientName) {
-        this.visitDashboard();
-        if (clientName === ''){
-            cy.visit('/client/detail')
-            // cy.get('tr').eq(1).click();
-        } else {
-            this.elements.clientRecord(clientName).click();
-        }
-        this.elements.sowContractNavigation().click();
-        this.elements.contractsNavigation().click();
-    }
-
-    visitMilestone(clientName) {
-        this.visitDashboard();
-        if (clientName === ''){
-            cy.visit('/client/detail')
-            // cy.get('tr').eq(1).click();
-        } else {
-            this.elements.clientRecord(clientName).click();
-        }        
-        this.elements.sowContractNavigation().click();
-        this.elements.milestoneNavigation().click();
-    }
-
-    visitPurchaseOrder(clientName) {
-        this.visitDashboard();
-        if (clientName === ''){
-            cy.visit('/client/detail')
-            // cy.get('tr').eq(1).click();
-        } else {
-            this.elements.clientRecord(clientName).click();
-        }        
-        this.elements.sowContractNavigation().click();
-        this.elements.purchaseOrderNavigation().click();
-    }
-
-    visitAllocations(clientName) {
-        this.visitDashboard();
-        if (clientName === ''){
-            cy.visit('/client/detail')
-            // cy.get('tr').eq(1).click();
-        } else {
-            this.elements.clientRecord(clientName).click();
-        }        
-        this.elements.allocationNavigation().click();
-    }
-
-    visitInvoices(clientName) {
-        this.visitDashboard();
-        if (clientName === '') {
-            cy.visit('/client/detail')
-            // cy.get('tr').eq(1).click();
-        } else {
-            this.elements.clientRecord(clientName).click();
-        }
-        this.elements.invoiceNavigation().click();
-    }
-
-    visitTimesheets() {
-        cy.visit(this.urls.timesheet);
+            .should('have.css', 'pointer-events', 'none');
     }
 
     expectUrlToContain(url) {
@@ -204,4 +202,4 @@ class Common {
     }
 }
 
-export { Common };
+export { RoleBasedAccess };
