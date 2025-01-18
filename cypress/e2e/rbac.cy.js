@@ -1,4 +1,3 @@
-import action from '../support/actions/action';
 import { Common } from '../support/pages/common';
 
 const rbac = new Common();
@@ -17,21 +16,22 @@ const urls = {
     purchaseOrder : '/client/contracts/purchase-order',
     allocation : '/client/allocations',
     invoice : '/client/invoices',
+    resourceMetrics : '/resources',
 };
 
 listOfRoles.forEach((role) => {
     describe(`Role based access testing for ${role}`, () => {
 
         before(() => {
-            action.removeAllUserRoles(userCredentials.email);
+            cy.removeAllUserRoles(userCredentials.email);
             cy.waitForRoleUpdate('', true);
             const adjustedRole = Cypress.env('environment') === 'demo'? role + '_demo' : role;
-            action.assignUserRole(userCredentials.email, adjustedRole);
+            cy.assignUserRole(userCredentials.email, adjustedRole);
             cy.waitForRoleUpdate(adjustedRole, false);
-            action.window().then((window) => {
+            cy.window().then((window) => {
                 const userData = JSON.parse(window.localStorage.getItem('userData'));
                 const userRoles = userData.user_roles;
-                action.getUserPermissions(userRoles).then((userPermissions) => {
+                cy.getUserPermissions(userRoles).then((userPermissions) => {
                     permissions = userPermissions;
                 })
             })
@@ -53,7 +53,7 @@ listOfRoles.forEach((role) => {
         })
 
         it("Verifies Estimation access permissions", () => {
-            action.log(permissions);
+            cy.log(permissions);
             if(permissions.client_management_module) {
                 if(permissions.estimation_view) {
                     rbac.visitEstimation('');
@@ -305,7 +305,7 @@ listOfRoles.forEach((role) => {
         })
 
         it("Verifies Resource Metrics access permissions", () => {
-            if (permissions.resource_metrics_view) {
+            if (permissions.resource_view) {
                 rbac.visitTimesheets();
                 rbac.clickNavigationFor('Resource Management');
                 rbac.clickNavigationFor('Resource Metrics');
@@ -316,7 +316,7 @@ listOfRoles.forEach((role) => {
                     rbac.expectUrlToContain(urls.timesheet);
                 } else {
                     rbac.visitTimesheets();
-                    rbac.expectNavigationDisabledFor('Resource Metrics');
+                    rbac.expectNavigationDisabledFor('Resource Management');
                 }
             }
         })

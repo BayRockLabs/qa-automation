@@ -1,38 +1,36 @@
 /// <reference types="Cypress" />
 
-import action from '../actions/action';
-
 class Common {
     noAccessTooltipMessage = 'You don’t have access to this module';
     elements = {
-        moduleNavigationFor : (moduleName) => action.get('div').contains(moduleName),
-        noAccessTooltip : (moduleName) => action.get('.MuiTooltip-tooltip'),
-        buttonContaining : (buttonText) => action.get('button').contains(buttonText),
-        listingRecord: (labelName) => action.get('span').contains(labelName),
-        effortEstimationNavigation: () => action.get('div').contains('Effort Estimation'),
-        estimationNavigation: () => action.get('div').contains('Estimation'),
-        pricingNavigation: () => action.get('div').contains('Pricing'),
-        sowContractNavigation: () => action.get('div').contains('SOWContract'),
-        contractsNavigation: () => action.get('div').contains('Contracts'),
-        milestoneNavigation: () => action.get('div').contains('Milestones'),
-        purchaseOrderNavigation: () => action.get('div').contains('Purchase Orders'),
-        allocationNavigation: () => action.get('div').contains('Allocations'),
-        invoiceNavigation: () => action.get('div').contains('Invoices'),
-        editButton: () => action.get('button').contains('Edit'),
-        clientRecord: (clientName) => action.get('span').contains(clientName),
+        moduleNavigationFor : (moduleName) => cy.get('div').contains(moduleName),
+        noAccessTooltip : () => cy.get('.MuiTooltip-tooltip'),
+        buttonContaining : (buttonText) => cy.get('button').contains(buttonText),
+        listingRecord: (labelName) => cy.get('span').contains(labelName),
+        effortEstimationNavigation: () => cy.get('div').contains('Effort Estimation'),
+        estimationNavigation: () => cy.get('div').contains('Estimation'),
+        pricingNavigation: () => cy.get('div').contains('Pricing'),
+        sowContractNavigation: () => cy.get('div').contains('SOWContract'),
+        contractsNavigation: () => cy.get('div').contains('Contracts'),
+        milestoneNavigation: () => cy.get('div').contains('Milestones'),
+        purchaseOrderNavigation: () => cy.get('div').contains('Purchase Orders'),
+        allocationNavigation: () => cy.get('div').contains('Allocations'),
+        invoiceNavigation: () => cy.get('div').contains('Invoices'),
+        editButton: () => cy.get('button').contains('Edit'),
+        clientRecord: (clientName) => cy.get('span').contains(clientName),
         deleteButton: (recordLabel) => this
                                         .action
                                         .xpath(`//span[text()="${recordLabel}"]/ancestor::td/ancestor::tr//td//span//button`),
         invoiceIcons : {
-            regenerate : () => action.get('[data-testid="CachedOutlinedIcon"]'),
-            email : () => action.get('[data-testid="EmailOutlinedIcon"]'),
-            markAsPaid : () => action.get('[data-testid="CheckCircleOutlineOutlinedIcon"]'),
-            download : () => action.get('[data-testid="DownloadIcon"]')
+            regenerate : () => cy.get('[data-testid="CachedOutlinedIcon"]'),
+            email : () => cy.get('[data-testid="EmailOutlinedIcon"]'),
+            markAsPaid : () => cy.get('[data-testid="CheckCircleOutlineOutlinedIcon"]'),
+            download : () => cy.get('[data-testid="DownloadIcon"]')
         }
     };
     
     visitDashboard() {
-        action.visit('/dashboard');
+        cy.visit('/dashboard');
     }
 
     clickButtonContaining(buttonText) {
@@ -65,8 +63,8 @@ class Common {
     }
 
     visitFirstEntryFromListing() {
-        action.visit('/client/detail');
-        // action.get('tr').eq(1).click();
+        cy.visit('/client/detail');
+        // cy.get('tr').eq(1).click();
     }
 
     clickNavigationFor(moduleName) {
@@ -80,7 +78,9 @@ class Common {
         this
             .elements
             .moduleNavigationFor(moduleName)
+            .invoke('show')
             .realHover();
+            // .realHover();
         this
             .elements
             .noAccessTooltip()
@@ -89,14 +89,14 @@ class Common {
     }
 
     visitInsights() {
-        action.visit('/dashboardpage');
+        cy.visit('/dashboardpage');
     }
 
     visitEstimation(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            action.visit('/client/detail')
-            // action.get('tr').eq(1).click();
+            cy.visit('/client/detail')
+            // cy.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -107,8 +107,8 @@ class Common {
     visitPricing(clientName) {
         this.visitDashboard();
         if(clientName === ''){
-            action.visit('/client/detail')
-            // action.get('tr').eq(1).click();
+            cy.visit('/client/detail')
+            // cy.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -119,8 +119,8 @@ class Common {
     visitContracts(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            action.visit('/client/detail')
-            // action.get('tr').eq(1).click();
+            cy.visit('/client/detail')
+            // cy.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -131,8 +131,8 @@ class Common {
     visitMilestone(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            action.visit('/client/detail')
-            // action.get('tr').eq(1).click();
+            cy.visit('/client/detail')
+            // cy.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -143,8 +143,8 @@ class Common {
     visitPurchaseOrder(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            action.visit('/client/detail')
-            // action.get('tr').eq(1).click();
+            cy.visit('/client/detail')
+            // cy.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -155,8 +155,8 @@ class Common {
     visitAllocations(clientName) {
         this.visitDashboard();
         if (clientName === ''){
-            action.visit('/client/detail')
-            // action.get('tr').eq(1).click();
+            cy.visit('/client/detail')
+            // cy.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }        
@@ -166,8 +166,8 @@ class Common {
     visitInvoices(clientName) {
         this.visitDashboard();
         if (clientName === '') {
-            action.visit('/client/detail')
-            // action.get('tr').eq(1).click();
+            cy.visit('/client/detail')
+            // cy.get('tr').eq(1).click();
         } else {
             this.elements.clientRecord(clientName).click();
         }
@@ -175,15 +175,11 @@ class Common {
     }
 
     visitTimesheets() {
-        this.visitDashboard();
-        this
-            .elements
-            .moduleNavigationFor('Timesheets')
-            .click();
+        cy.visit(this.urls.timesheet);
     }
 
     expectUrlToContain(url) {
-        action.url().should('contain', url);
+        cy.url().should('contain', url);
     }
 
     expectNavigationDisabledForDefaultUser() {

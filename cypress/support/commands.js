@@ -14,6 +14,7 @@ Cypress.Commands.add('getUserPermissions', (userRoles) => {
         demo environment
     */
     const environment = Cypress.env('environment') || 'prod';
+
     if (environment === 'demo') {
         userRoles = userRoles.map(role => role.replace('_demo', ''));
         console.log('current user roles:', userRoles);
@@ -53,7 +54,8 @@ Cypress.Commands.add('getUserPermissions', (userRoles) => {
                     finalPermissions.contract_module = finalPermissions.contract_view ||
                                                        finalPermissions.milestone_view ||
                                                        finalPermissions.purchase_order_view;
-                    finalPermissions.client_management_module = finalPermissions.estimation_module ||
+                    finalPermissions.client_management_module = finalPermissions.client_view ||
+                                                                finalPermissions.estimation_module ||
                                                                 finalPermissions.contract_module ||
                                                                 finalPermissions.allocation_view ||
                                                                 finalPermissions.invoice_view;

@@ -210,7 +210,12 @@ class Action {
     removeAllUserRoles(...args) {
         cy.removeAllUserRoles(...args);
     }
+
+    debug(...args) {
+        this.element.debug(...args);
+        return this;
+    }
 }
 
-const action = new Action
+const action = new Action();
 export default action;
