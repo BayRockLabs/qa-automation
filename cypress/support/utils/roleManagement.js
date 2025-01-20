@@ -1,10 +1,10 @@
 /// <reference types="Cypress" />
 
-const tenantId = Cypress.env("tenantId");
-const clientId = Cypress.env("clientId");
-const clientSecret = Cypress.env("clientSecret");
-const authority = Cypress.env("authBaseUrl") + "/" + Cypress.env("tenantId");
-const graphBaseUrl = Cypress.env('graphBaseUrl');
+const tenantId = Cypress.env("TENANT_ID");
+const clientId = Cypress.env("CLIENT_ID");
+const clientSecret = Cypress.env("CLIENT_SECRET");
+const authority = Cypress.env("AUTH_BASE_URL") + "/" + Cypress.env("TENANT_ID");
+const graphBaseUrl = Cypress.env('GRAPH_BASE_URL');
 
 const getAccessToken = () => {
     return cy.request({
@@ -164,4 +164,29 @@ export const removeAllUserRoles = (username) => {
             })
         })
     })
+}
+
+export const waitForRoleUpdate = (expectedRoles, 
+                                removal = false, 
+                                timeout = 50000, 
+                                interval = 7000) => {
+    const startTime = Date.now();
+    const userCredentials = Cypress.env('USER');
+
+    const checkRoles = () => {
+        return cy.login(userCredentials).then((userRoles) => {
+            if (!removal && userRoles.includes(expectedRoles)) {
+                return true;
+            } else if (removal && userRoles.length === 0) {
+                return true;
+            }
+            if (Date.now() - startTime > timeout) {
+                throw new Error('Roles did not update in time');
+            }
+            return new Promise((resolve) => {
+                setTimeout(() => resolve(checkRoles()), interval);
+            });
+        });
+    };
+    return checkRoles();
 }

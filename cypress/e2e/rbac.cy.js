@@ -1,8 +1,8 @@
 import { RoleBasedAccess } from '../support/pages/roleBasedAccess';
 
 const rbac = new RoleBasedAccess();
-const userCredentials = Cypress.env('user');
-const listOfRoles = Cypress.env('allowedRoleNames');
+const userCredentials = Cypress.env('USER');
+const listOfRoles = Cypress.env('ALLOWED_ROLE_NAMES');
 
 listOfRoles.forEach((role) => {
     describe(`Role based access testing for ${role}`, () => {
@@ -11,7 +11,7 @@ listOfRoles.forEach((role) => {
             rbac.loadUrls();
             rbac.removeAllUserRoles(userCredentials.email);
             rbac.waitForRoleUpdate('', true);
-            const adjustedRole = Cypress.env('environment') === 'demo' ? role + '_demo' : role;
+            const adjustedRole = Cypress.env('ENVIRONMENT') === 'demo' ? role + '_demo' : role;
             rbac.assignRoleToUser(userCredentials.email, adjustedRole);
             rbac.waitForRoleUpdate(adjustedRole, false);
             rbac.getUserPermissionsFromRoles();
@@ -85,7 +85,6 @@ listOfRoles.forEach((role) => {
                         rbac.clickNavigationFor('Estimation');
                         rbac.expectNavigationDisabledFor('Pricing');
                     }
-                    cy.debug();
                 }
             } else {
                 rbac.visitDashboard();
@@ -216,9 +215,9 @@ listOfRoles.forEach((role) => {
                     rbac.visitInvoices();
                     rbac.expectUrlToContain(rbac.urls.invoice);
                     if (rbac.permissions.allocation_admin) {
-                        rbac.expectInvoiceIconsEnabled();
+                        // rbac.expectInvoiceIconsEnabled();
                     } else {
-                        rbac.expectInvoiceIconsDisabled();
+                        // rbac.expectInvoiceIconsDisabled();
                     }
                 } else {
                     if (rbac.permissions.default_user) {

@@ -1,11 +1,12 @@
 /// <reference types="Cypress" />
+import { assignRole, waitForRoleUpdate, removeAllUserRoles } from '../utils/roleManagement';
 
 class RoleBasedAccess {
     noAccessTooltipMessage = 'You don’t have access to this module';
     elements = {
-        moduleNavigationFor : (moduleName) => cy.get('div').contains(moduleName),
-        noAccessTooltip : () => cy.get('.MuiTooltip-tooltip'),
-        buttonContaining : (buttonText) => cy.get('button').contains(buttonText),
+        moduleNavigationFor: (moduleName) => cy.get('div').contains(moduleName),
+        noAccessTooltip: () => cy.get('.MuiTooltip-tooltip'),
+        buttonContaining: (buttonText) => cy.get('button').contains(buttonText),
         listingRecord: (labelName) => cy.get('span').contains(labelName),
         effortEstimationNavigation: () => cy.get('div').contains('Effort Estimation'),
         estimationNavigation: () => cy.get('div').contains('Estimation'),
@@ -19,13 +20,13 @@ class RoleBasedAccess {
         editButton: () => cy.get('button').contains('Edit'),
         clientRecord: (clientName) => cy.get('span').contains(clientName),
         deleteButton: (recordLabel) => this
-                                        .action
-                                        .xpath(`//span[text()="${recordLabel}"]/ancestor::td/ancestor::tr//td//span//button`),
-        invoiceIcons : {
-            regenerate : () => cy.get('[data-testid="CachedOutlinedIcon"]'),
-            email : () => cy.get('[data-testid="EmailOutlinedIcon"]'),
-            markAsPaid : () => cy.get('[data-testid="CheckCircleOutlineOutlinedIcon"]'),
-            download : () => cy.get('[data-testid="DownloadIcon"]')
+            .action
+            .xpath(`//span[text()="${recordLabel}"]/ancestor::td/ancestor::tr//td//span//button`),
+        invoiceIcons: {
+            regenerate: () => cy.get('[data-testid="CachedOutlinedIcon"]'),
+            email: () => cy.get('[data-testid="EmailOutlinedIcon"]'),
+            markAsPaid: () => cy.get('[data-testid="CheckCircleOutlineOutlinedIcon"]'),
+            download: () => cy.get('[data-testid="DownloadIcon"]')
         }
     };
 
@@ -33,7 +34,7 @@ class RoleBasedAccess {
         this.urls = {};
         this.permissions = {};
     }
-    
+
     loadUrls() {
         cy.fixture('urls.json').then((fixtureData) => {
             cy.wrap(fixtureData).should('exist');
@@ -50,15 +51,15 @@ class RoleBasedAccess {
     }
 
     assignRoleToUser(email, roleName) {
-        cy.assignUserRole(email, roleName);
+        assignRole(email, roleName);
     }
 
     removeAllUserRoles(email) {
-        cy.removeAllUserRoles(email);
+        removeAllUserRoles(email);
     }
 
     waitForRoleUpdate(roleName, expectEmptyRoles) {
-        cy.waitForRoleUpdate(roleName, expectEmptyRoles);
+        waitForRoleUpdate(roleName, expectEmptyRoles);
     }
 
     getUserPermissionsFromRoles() {
@@ -90,19 +91,19 @@ class RoleBasedAccess {
     }
 
     visitMilestone(clientName) {
-        this.visitClientDetail(clientName);       
+        this.visitClientDetail(clientName);
         this.elements.sowContractNavigation().click();
         this.elements.milestoneNavigation().click();
     }
 
     visitPurchaseOrder(clientName) {
-        this.visitClientDetail(clientName);     
+        this.visitClientDetail(clientName);
         this.elements.sowContractNavigation().click();
         this.elements.purchaseOrderNavigation().click();
     }
 
     visitAllocations(clientName) {
-        this.visitClientDetail(clientName);    
+        this.visitClientDetail(clientName);
         this.elements.allocationNavigation().click();
     }
 
@@ -160,16 +161,7 @@ class RoleBasedAccess {
             .click();
     }
 
-    expectNavigationDisabledFor(moduleName){
-        // this
-        //     .elements
-        //     .moduleNavigationFor(moduleName)
-        //     .realHover();
-        // this
-        //     .elements
-        //     .noAccessTooltip()
-        //     .should('be.visible')
-        //     .and('have.text', this.noAccessTooltipMessage);
+    expectNavigationDisabledFor(moduleName) {
         this
             .elements
             .moduleNavigationFor(moduleName)
@@ -188,17 +180,17 @@ class RoleBasedAccess {
     }
 
     expectInvoiceIconsEnabled() {
-        // this.elements.invoiceIcons.regenerate().scrollIntoView().should('be.visible');
-        // this.elements.invoiceIcons.email().scrollIntoView().should('be.visible');
-        // this.elements.invoiceIcons.download().scrollIntoView().should('be.visible');
-        // this.elements.invoiceIcons.markAsPaid().scrollIntoView().should('be.visible');
+        this.elements.invoiceIcons.regenerate().scrollIntoView().should('be.visible');
+        this.elements.invoiceIcons.email().scrollIntoView().should('be.visible');
+        this.elements.invoiceIcons.download().scrollIntoView().should('be.visible');
+        this.elements.invoiceIcons.markAsPaid().scrollIntoView().should('be.visible');
     }
 
     expectInvoiceIconsDisabled() {
-        // this.elements.invoiceIcons.regenerate().should('not.exist');
-        // this.elements.invoiceIcons.email().should('not.exist');
-        // this.elements.invoiceIcons.download().should('not.exist');
-        // this.elements.invoiceIcons.markAsPaid().should('not.exist');
+        this.elements.invoiceIcons.regenerate().should('not.exist');
+        this.elements.invoiceIcons.email().should('not.exist');
+        this.elements.invoiceIcons.download().should('not.exist');
+        this.elements.invoiceIcons.markAsPaid().should('not.exist');
     }
 }
 
