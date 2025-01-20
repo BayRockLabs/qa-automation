@@ -1,4 +1,5 @@
 import { RoleBasedAccess } from '../support/pages/roleBasedAccess';
+import { adjustUserRolesAccordingToEnvironment } from '../support/utils/common';
 
 const rbac = new RoleBasedAccess();
 const userCredentials = Cypress.env('USER');
@@ -11,7 +12,7 @@ listOfRoles.forEach((role) => {
             rbac.loadUrls();
             rbac.removeAllUserRoles(userCredentials.email);
             rbac.waitForRoleUpdate('', true);
-            const adjustedRole = Cypress.env('ENVIRONMENT') === 'demo' ? role + '_demo' : role;
+            const adjustedRole = adjustUserRolesAccordingToEnvironment(role);
             rbac.assignRoleToUser(userCredentials.email, adjustedRole);
             rbac.waitForRoleUpdate(adjustedRole, false);
             rbac.getUserPermissionsFromRoles();
