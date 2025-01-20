@@ -25,3 +25,12 @@ export const hexToRGB = (hex) => {
     const b = bigint & 255;
     return `rgb(${r}, ${g}, ${b})`;
 }
+
+export const adjustUserRolesAccordingToEnvironment = (userRoles) => {
+    const stringToAppend = Cypress.env('ENVIRONMENT') === 'demo' ? '_demo' : '';
+    for (let key in userRoles) {
+        if (userRoles.hasOwnProperty(key)) {
+            userRoles[key] += stringToAppend;
+        }
+    }
+}

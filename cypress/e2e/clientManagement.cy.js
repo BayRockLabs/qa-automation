@@ -20,10 +20,11 @@ before(() => {
 describe('Client Management - Create', () => {
     const testClient = new ClientManagement();
 	
-	it("Visits the client management page", () => {
+	it.only("Visits the client management page", () => {
 		testClient.visit();
 		testClient.action.url().should('contain', '/dashboard');
 		testClient.expectClientManagementHeaderVisible();
+        cy.pause();
 	});
 	
 	it("Opens the add client popup", () => {

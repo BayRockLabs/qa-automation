@@ -1,14 +1,13 @@
 /// <reference types="Cypress" />
 
 import { decode } from 'jsonwebtoken';
-import { getUserRoles } from './roleBasedAccess';
 
-const authority = Cypress.env("authBaseUrl") + "/" + Cypress.env("tenantId");
-const clientId = Cypress.env("clientId");
-const clientSecret = Cypress.env("clientSecret");
+const authority = Cypress.env("AUTH_BASE_URL") + "/" + Cypress.env("TENANT_ID");
+const clientId = Cypress.env("CLIENT_ID");
+const clientSecret = Cypress.env("CLIENT_SECRET");
 const apiScopes = ["user.read", "openid", "profile", "email"];
-const tenantId = Cypress.env("tenantId");
-const registerUrl = Cypress.env("registerUrl");
+const tenantId = Cypress.env("TENANT_ID");
+const registerUrl = Cypress.env("REGISTER_URL");
 const environment = "login.windows.net";
 let username;
 let password;
@@ -95,10 +94,6 @@ const buildUserDataEntity = (
 	userInfo,
 	userRoles
 ) => {
-	cy.getUserRoles(userRoles)
-	.then((perms) => {
-		console.log(JSON.stringify(perms));
-	})
 	return {
 		user_info: userInfo,
 		user_roles: userRoles
@@ -182,6 +177,7 @@ const injectTokens = (tokenResponse) => {
 
 
 export const login = (user) => {
+	cy.logout();
 	username = user.email;
 	password = user.password;
 		return cy.visit("/login").request({
@@ -198,7 +194,11 @@ export const login = (user) => {
 			form: true
 		}).then((response) => {
 			injectTokens(response.body);
-		}).reload();
+			return cy.window().its('localStorage').then((localStorage) => {
+                const userData = JSON.parse(localStorage.getItem('userData'));
+                return userData.user_roles;
+            });
+		});
 };
 
 export const userData = (accessToken) => {
@@ -217,3 +217,7 @@ export const userData = (accessToken) => {
 	});
 };
 
+export const logout = () => {
+	sessionStorage.clear();
+	localStorage.clear();
+}

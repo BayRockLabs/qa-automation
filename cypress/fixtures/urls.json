@@ -1,0 +1,15 @@
+{
+    "insights": "/dashboardpage",
+    "dashboard": "/dashboard",
+    "timesheet": "/timesheet/empTimesheet",
+    "estimation": "/estimation",
+    "pricing": "/pricing",
+    "contract": "/client/contracts",
+    "milestone": "client/contracts/milestone",
+    "purchaseOrder": "/client/contracts/purchase-order",
+    "allocation": "/client/allocations",
+    "invoice": "/client/invoices",
+    "clientDetail" : "/client/detail",
+    "resourceMetrics" : "/resources",
+    "exportTimesheet" : "/exportTimesheet"
+}

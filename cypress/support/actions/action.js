@@ -3,8 +3,9 @@
  * Most functions return an instance of the Action class, allowing chaining of actions.
  */
 
-class Action {
+import "cypress-real-events";
 
+class Action {
     constructor() {
         this.element = null;
     }
@@ -46,6 +47,11 @@ class Action {
 
     should(...args){
         this.element.should(...args);
+        return this;
+    }
+
+    and(...args) {
+        this.element.and(...args);
         return this;
     }
 
@@ -123,8 +129,8 @@ class Action {
         }
     }
 
-    wrap(item) {
-        this.element = cy.wrap(item);
+    wrap(...args) {
+        this.element = cy.wrap(...args);
         return this;
     }
 
@@ -133,11 +139,83 @@ class Action {
         return this; 
     }
 
-    getUserRoles(...args) {
-        this.element = cy.getUserRoles(...args);
+    getUserRoles() {
+        return cy.getUserRoles();
+    }
+
+    getUserPermissions(...args) {
+        this.element = cy.getUserPermissions(...args);
         return this;
     }
-    
+
+    then(...args) {
+        this.element = this.element.then(...args);
+        return this;
+    }
+
+    log(...args) {
+        this.element = cy.log(...args);
+        return this;
+    }
+
+    as(...args) {
+        this.element = this.element.as(...args);
+        return this;
+    }
+
+    trigger(...args) {
+        this.element = this.element.trigger(...args);
+        return this;
+    }
+
+    window(...args) {
+        this.element = cy.window(...args);
+        return this;
+    }
+
+    clearSessionData() {
+        this.element = cy.clearSessionData();
+        return this;
+    }
+
+    realHover(...args) {
+        this.element = this.element.realHover(...args);
+        return this;
+    }
+
+    parent(...args){
+        this.element = this.element.parent(...args);
+        return this;
+    }
+
+    invoke(...args){
+        this.element = this.element.invoke(...args);
+        return this;
+    }
+
+    once(...args){
+        this.element = cy.once(...args);
+        return this;
+    }
+
+    assignUserRole(email, role) {
+        this.element = cy.assignUserRole(email, role);
+        return this;
+    }
+
+    removeUserRole(email, role) {
+        cy.removeUserRole(email, role);
+    }
+
+    removeAllUserRoles(...args) {
+        cy.removeAllUserRoles(...args);
+    }
+
+    debug(...args) {
+        this.element.debug(...args);
+        return this;
+    }
 }
 
-export { Action };
+const action = new Action();
+export default action;
