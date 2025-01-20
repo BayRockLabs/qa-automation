@@ -10,5 +10,6 @@
     "allocation": "/client/allocations",
     "invoice": "/client/invoices",
     "clientDetail" : "/client/detail",
-    "resourceMetrics" : "/resources"
+    "resourceMetrics" : "/resources",
+    "exportTimesheet" : "/exportTimesheet"
 }

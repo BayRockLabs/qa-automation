@@ -192,6 +192,13 @@ class RoleBasedAccess {
         this.elements.invoiceIcons.download().should('not.exist');
         this.elements.invoiceIcons.markAsPaid().should('not.exist');
     }
+
+    expectNavigationToNotExistFor(moduleName) {
+        this
+            .elements
+            .moduleNavigationFor(moduleName)
+            .should('not.exist');
+    }
 }
 
 export { RoleBasedAccess };
