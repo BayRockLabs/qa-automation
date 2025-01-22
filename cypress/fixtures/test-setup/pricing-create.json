@@ -1,0 +1,14 @@
+{
+    "name": "Cypress Pricing",
+    "discount": "12",
+    "final_offer_price": "339173.12",
+    "final_offer_margin": "174973.84",
+    "final_offer_gross_margin_percentage": "51.59",
+    "estimated_market_cost": 398376.48,
+    "estimated_market_price": 537808.248,
+    "estimated_company_avg_cost": 164199.28,
+    "estimated_company_avg_price": 385424,
+    "market_gm": 25.92592592592593,
+    "company_avg_gm": 57.4,
+    "estimation_name": "Cypress Estimation"
+}
