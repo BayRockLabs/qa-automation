@@ -8,6 +8,7 @@ class ProgrammaticTestSetup {
 
     login(user) {
         cy.login(user);
+        cy.reload();
     }
 
 
