@@ -21,7 +21,7 @@ module.exports = defineConfig({
         },
       });
     },
-    baseUrl: "https://c2c-demo.bayrocklabs.com", 
+    baseUrl: "https://localhost:3000", 
     chromeWebSecurity: false, 
     experimentalModifyObstructiveThirdPartyCode : true,
     experimentalStudio: true,
