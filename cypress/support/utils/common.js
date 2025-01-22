@@ -28,9 +28,5 @@ export const hexToRGB = (hex) => {
 
 export const adjustUserRolesAccordingToEnvironment = (userRoles) => {
     const stringToAppend = Cypress.env('ENVIRONMENT') === 'demo' ? '_demo' : '';
-    for (let key in userRoles) {
-        if (userRoles.hasOwnProperty(key)) {
-            userRoles[key] += stringToAppend;
-        }
-    }
+    return (userRoles + stringToAppend);
 }

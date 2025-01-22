@@ -1,0 +1,19 @@
+{
+    "name": "Cypress Client",
+    "address": "124 Cypress Street",
+    "start_date": "2023-12-31T18:30:00.000Z",
+    "end_date": "2024-12-30T18:30:00.000Z",
+    "end_type": "PSA",
+    "status": true,
+    "contract_name": "Cypress Contract",
+    "contract_end_type": "PSA",
+    "contract_version": "1.0",
+    "contract_created_by": "Jasjaap Singh",
+    "client_created_by": "Jasjaap Singh",
+    "client_ap_details": [],
+    "country": "38",
+    "state": "671",
+    "city": "10519",
+    "business_unit": "Enterprise",
+    "zip_code": "M5G 1R1"
+}

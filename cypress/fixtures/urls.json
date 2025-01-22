@@ -1,4 +1,5 @@
 {
+    "login" : "/login",
     "insights": "/dashboardpage",
     "dashboard": "/dashboard",
     "timesheet": "/timesheet/empTimesheet",

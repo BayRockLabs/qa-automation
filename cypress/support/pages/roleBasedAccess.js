@@ -1,4 +1,3 @@
-/// <reference types="Cypress" />
 import { assignRole, waitForRoleUpdate, removeAllUserRoles } from '../utils/roleManagement';
 
 class RoleBasedAccess {

@@ -254,28 +254,31 @@ listOfRoles.forEach((role) => {
             }
         })
 
-        it.only("Verifies Timesheet Export access permissions", () => {
+        it("Verifies Timesheet Export access permissions", () => {
             if (rbac.permissions.timesheet_export) {
                 rbac.visitTimesheets();
                 rbac.expectUrlToContain(rbac.urls.timesheet);
-                if (rbac.permissions.timesheet_export) {
-                    rbac.clickNavigationFor('Export Timesheet');
-                    rbac.expectUrlToContain(rbac.urls.exportTimesheet);
-                    rbac.expectButtonVisible('Export to JSON');
-                    rbac.expectButtonVisible('Export to Excel');
-                } else {
-                    rbac.expectNavigationToNotExistFor('Export Timesheet');
-                }
+                rbac.clickNavigationFor('Export Timesheet');
+                rbac.expectUrlToContain(rbac.urls.exportTimesheet);
+                rbac.expectButtonVisible('Export to JSON');
+                rbac.expectButtonVisible('Export to Excel');
+            } else {
+                rbac.visitTimesheets();
+                rbac.expectUrlToContain(rbac.urls.timesheet);
+                rbac.expectNavigationToNotExistFor('Export Timesheet');
             }
         })
 
-        it.only("Verifies Timesheet Approve  access permissions", () => {
+        it("Verifies Timesheet Approve  access permissions", () => {
             if (rbac.permissions.timesheet_approve) {
                 rbac.visitTimesheets();
                 rbac.expectUrlToContain(rbac.urls.timesheet);
                 rbac.expectButtonVisible('Manager View');
                 rbac.clickButtonContaining('Manager View');
                 rbac.expectButtonVisible('Approve Timesheets');
+            } else {
+                rbac.visitTimesheets();
+                rbac.expectUrlToContain(rbac.urls.timesheet);
             }
         })
 
