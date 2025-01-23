@@ -41,18 +41,18 @@ Cypress.Commands.add('getUserPermissions', (userRoles) => {
                         }, false);
                     });
 
-                    
+
                     finalPermissions.default_user = !(Object.values(finalPermissions).includes(true));
-                    finalPermissions.estimation_module = finalPermissions.estimation_view || 
-                                                         finalPermissions.pricing_view;
+                    finalPermissions.estimation_module = finalPermissions.estimation_view ||
+                        finalPermissions.pricing_view;
                     finalPermissions.contract_module = finalPermissions.contract_view ||
-                                                       finalPermissions.milestone_view ||
-                                                       finalPermissions.purchase_order_view;
+                        finalPermissions.milestone_view ||
+                        finalPermissions.purchase_order_view;
                     finalPermissions.client_management_module = finalPermissions.client_view ||
-                                                                finalPermissions.estimation_module ||
-                                                                finalPermissions.contract_module ||
-                                                                finalPermissions.allocation_view ||
-                                                                finalPermissions.invoice_view;
+                        finalPermissions.estimation_module ||
+                        finalPermissions.contract_module ||
+                        finalPermissions.allocation_view ||
+                        finalPermissions.invoice_view;
                     resolve(finalPermissions);
                 },
                 error: (err) => {
