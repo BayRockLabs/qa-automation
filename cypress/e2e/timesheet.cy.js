@@ -9,11 +9,8 @@ describe('Programmatic Test Setup', () => {
         setup.loadSetupData();
         setup.deleteClient('cypress client');
         setup.createClient();
-        // cy.pause()
         setup.createEstimation();
-        // cy.pause()
         setup.createPricing();
-        // cy.pause()
         setup.createSOWContract();
     })
 

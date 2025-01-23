@@ -18,7 +18,7 @@ listOfRoles.forEach((role) => {
             rbac.getUserPermissionsFromRoles();
         })
 
-        it("Verifies Client Management access permissions", () => {
+        it.only("Verifies Client Management access permissions", () => {
             if (rbac.permissions.client_view) {
                 rbac.visitDashboard();
                 rbac.expectUrlToContain(rbac.urls.dashboard);

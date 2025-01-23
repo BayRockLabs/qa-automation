@@ -151,41 +151,26 @@ class ProgrammaticTestSetup {
         // API endpoint to create a SOW Contract
         const url = `${this.backendAPIBaseURL}${this.apiEndpoints.sowContract}`;
 
+        console.log('------- contractSOW Create endpoing', url)
         // Get access token
         this.getAccessToken().then((accessToken) => {
             // Get SOW Contract fiel and encode it in binary and append to form data
             cy.fixture('test-documents/sow-contract-file.pdf', 'binary')
-            .then(Cypress.Blob.binaryStringToBlob)
-            .then((fileBlob) => {
+                .then(Cypress.Blob.binaryStringToBlob)
+                .then((fileBlob) => {
                     const fileWithMimeType = new Blob([fileBlob], { type: 'application/pdf' });
 
                     // Construct formData to send as payload
                     const formData = new FormData();
                     const payload = this.requestPayloads["sow-contract-create"];
 
-                    formData.append('file', fileWithMimeType, 'sow-contract-file.pdf');
+                    // formData.append('file', fileWithMimeType, 'sow-contract-file.pdf');
                     Object.entries(payload).forEach(([key, value]) => {
                         formData.append(key, value);
                     })
                     formData.append('client', this.uuid.client);
                     formData.append('estimation', this.uuid.estimation);
                     formData.append('pricing', this.uuid.pricing);
-
-                    if (formData instanceof FormData) {
-                        for (const [key, value] of formData.entries()) {
-                          if (value instanceof File) {
-                            console.log(`${key}: ${value.name} (size: ${value.size}, type: ${value.type})`);
-                          } else {
-                            console.log(`${key}: ${value}`);
-                          }
-                        }
-                      } 
-
-                      const file = formData.get('file');
-console.log(file.type);  // Check if the MIME type is present
-
-
-                      cy.pause();
 
                     // Finally, request to create SOW Contract API
                     cy.request({
@@ -194,9 +179,9 @@ console.log(file.type);  // Check if the MIME type is present
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
                         },
-                        body: formData,
                     }).then((response) => {
-                        console.log('--------SOW Contract response----------\n', response.body);
+                        console.log('--------SOW Contract response----------\n', response);
+                        console.log(response);
                         expect(response.status).to.eq(201);
                         expect(response.body).to.have.property("uuid");
                         this.uuid.sowContract = response.body.uuid;
