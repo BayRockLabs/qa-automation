@@ -49,8 +49,6 @@ class ProgrammaticTestSetup {
     }
 
     deleteClient(clientNameSearch) {
-        console.log(this.apiEndpoints);
-        console.log(this.backendAPIBaseURL);
         const autoSearchURL = `${this.backendAPIBaseURL}${this.apiEndpoints.autoSearch}`;
         let clientUUID;
         this.getAccessToken().then((accessToken) => {
@@ -62,7 +60,6 @@ class ProgrammaticTestSetup {
                     search_type: "client"
                 }
             }).then((response) => {
-                console.log(response);
                 expect(response.status).to.eq(200);
                 if (response.body.results[0]) {
                     clientUUID = response.body.results[0].uuid;
@@ -101,7 +98,6 @@ class ProgrammaticTestSetup {
     }
 
     createEstimation() {
-        console.log('------- client uuid', this.uuid.client)
         const url = `${this.backendAPIBaseURL}${this.apiEndpoints.estimation}`;
         this.getAccessToken().then((accessToken) => {
             cy.request({
@@ -149,9 +145,8 @@ class ProgrammaticTestSetup {
 
     createSOWContract() {
         // API endpoint to create a SOW Contract
-        const url = `${this.backendAPIBaseURL}${this.apiEndpoints.sowContract}`;
+        const url = `${this.backendAPIBaseURL}${this.apiEndpoints.sowContract}/`;
 
-        console.log('------- contractSOW Create endpoing', url)
         // Get access token
         this.getAccessToken().then((accessToken) => {
             // Get SOW Contract fiel and encode it in binary and append to form data
@@ -164,10 +159,11 @@ class ProgrammaticTestSetup {
                     const formData = new FormData();
                     const payload = this.requestPayloads["sow-contract-create"];
 
-                    // formData.append('file', fileWithMimeType, 'sow-contract-file.pdf');
+                    formData.append('file', fileWithMimeType, 'sow-contract-file.pdf');
                     Object.entries(payload).forEach(([key, value]) => {
                         formData.append(key, value);
                     })
+
                     formData.append('client', this.uuid.client);
                     formData.append('estimation', this.uuid.estimation);
                     formData.append('pricing', this.uuid.pricing);
@@ -178,13 +174,17 @@ class ProgrammaticTestSetup {
                         url: url,
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
+                            'content-type': 'multipart/form-data',
                         },
+                        body: formData,
                     }).then((response) => {
-                        console.log('--------SOW Contract response----------\n', response);
-                        console.log(response);
                         expect(response.status).to.eq(201);
-                        expect(response.body).to.have.property("uuid");
-                        this.uuid.sowContract = response.body.uuid;
+                        const arrayBuffer = response.body;
+                        const decoder = new TextDecoder('utf-8');
+                        const decodedString = decoder.decode(arrayBuffer);
+                        const decodedResponse = JSON.parse(decodedString);
+                        expect(decodedResponse).to.have.property("uuid");
+                        this.uuid.sowContract = decodedResponse.uuid;
                     });
                 });
         });
