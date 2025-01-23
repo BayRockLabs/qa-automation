@@ -1,1 +1,12 @@
-{}
+{
+    "contractsow_name": "Cypress SOW Conract",
+    "total_contract_amount": 339173.12,
+    "start_date": "2025-01-01",
+    "end_date": "2025-12-31",
+    "payment_terms_contract": "Net 30",
+    "contractsow_type": "TIME AND MATERIAL",
+    "doc_contract_amount": 0,
+    "doc_start_date": "",
+    "doc_end_date": "",
+    "extension_sow_contract": "null"
+}

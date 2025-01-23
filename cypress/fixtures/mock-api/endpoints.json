@@ -9,5 +9,6 @@
     "invoice" : "/c2c_service/invoices/client",
     "timesheet" : "/c2c_service/employee-timesheets",
     "timesheetManagerNotificationCount" : "/c2c_service/ts-manager-notification-count",
-    "managerView" : "/c2c_service/resource/timesheet"
+    "managerView" : "/c2c_service/resource/timesheet",
+    "autoSearch" : "/c2c_service/auto-search"
 }

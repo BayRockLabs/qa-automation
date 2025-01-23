@@ -1,22 +1,32 @@
+import { access } from "fs";
+
 class ProgrammaticTestSetup {
     constructor() {
-        this.backendAPIBaseURL = "";
-        this.apiEndpoints = {};
+        this.backendAPIBaseURL = Cypress.env("BACKEND_API_BASE_URL");
+        this.apiEndpoints = {
+            clientManagement: "/c2c_service/client",
+            estimation: "/c2c_service/estimation",
+            pricing: "/c2c_service/pricing",
+            sowContract: "/c2c_service/contractsow",
+            milestone: "/c2c_service/milestones",
+            purchaseOrder: "/c2c_service/purchase_orders_client_all",
+            allocation: "/c2c_service/allocation",
+            invoice: "/c2c_service/invoices/client",
+            timesheet: "/c2c_service/employee-timesheets",
+            timesheetManagerNotificationCount: "/c2c_service/ts-manager-notification-count",
+            managerView: "/c2c_service/resource/timesheet",
+            autoSearch: "/c2c_service/auto-search"
+        };
         this.uuid = {};
-        this.requestPayloads = {};    
+        this.requestPayloads = {};
+        this.errorMessages = {
+            clientAlreadyExists: "Client with this name already exists.",
+        }
     }
 
     login(user) {
         cy.login(user);
-    }
-
-
-    loadAPIEndpoints() {
-        this.backendAPIBaseURL = Cypress.env("BACKEND_API_BASE_URL");
-        return cy.fixture("mock-api/endpoints.json").then((fixtureData) => {
-            cy.wrap(fixtureData).should('exist');
-            this.apiEndpoints = fixtureData;
-        })
+        cy.reload();
     }
 
     loadSetupData() {
@@ -32,15 +42,43 @@ class ProgrammaticTestSetup {
             });
     }
 
-    initialiseTest() {
-        this.loadSetupData();
-        return this.loadAPIEndpoints();
-    }
-
     getAccessToken() {
         return cy.window().then((window) => {
             return (window.localStorage.getItem('microsoft_code'));
         });
+    }
+
+    deleteClient(clientNameSearch) {
+        console.log(this.apiEndpoints);
+        console.log(this.backendAPIBaseURL);
+        const autoSearchURL = `${this.backendAPIBaseURL}${this.apiEndpoints.autoSearch}`;
+        let clientUUID;
+        this.getAccessToken().then((accessToken) => {
+            cy.request({
+                method: "GET",
+                url: autoSearchURL,
+                qs: {
+                    search_query: clientNameSearch,
+                    search_type: "client"
+                }
+            }).then((response) => {
+                console.log(response);
+                expect(response.status).to.eq(200);
+                if (response.body.results[0]) {
+                    clientUUID = response.body.results[0].uuid;
+                    const deleteURL = `${this.backendAPIBaseURL}${this.apiEndpoints.clientManagement}/${clientUUID}`;
+                    cy.request({
+                        method: "DELETE",
+                        url: deleteURL,
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                        }
+                    }).then((response) => {
+                        expect(response.status).to.eq(200);
+                    })
+                }
+            })
+        })
     }
 
     createClient() {
@@ -54,9 +92,7 @@ class ProgrammaticTestSetup {
                 },
                 body: this.requestPayloads["client-create"],
             }).then((response) => {
-                console.log('Client create response body: ', response.body);
-                cy.pause();
-                expect(response.status).to.eq(200);
+                expect(response.status).to.eq(201);
                 expect(response.body.result.status).to.eq(200);
                 expect(response.body).to.have.property("uuid");
                 this.uuid.client = response.body.uuid;
@@ -65,7 +101,7 @@ class ProgrammaticTestSetup {
     }
 
     createEstimation() {
-        cy.wrap(this.uuid.client).should('exist');
+        console.log('------- client uuid', this.uuid.client)
         const url = `${this.backendAPIBaseURL}${this.apiEndpoints.estimation}`;
         this.getAccessToken().then((accessToken) => {
             cy.request({
@@ -79,17 +115,16 @@ class ProgrammaticTestSetup {
                     client: this.uuid.client,
                 },
             }).then((response) => {
-                expect(response.status).to.eq(200);
+                expect(response.status).to.eq(201);
                 expect(response.body.result.status).to.eq(200);
                 expect(response.body.client).to.eq(this.uuid.client);
+                expect(response.body).to.have.property("uuid");
                 this.uuid.estimation = response.body.uuid;
             });
         });
     }
 
     createPricing() {
-        cy.wrap(this.uuid.client).should('exist');
-        cy.wrap(this.uuid.estimation).should('exist');
         const url = `${this.backendAPIBaseURL}${this.apiEndpoints.pricing}`;
         this.getAccessToken().then((accessToken) => {
             cy.request({
@@ -104,68 +139,58 @@ class ProgrammaticTestSetup {
                     estimation: this.uuid.estimation,
                 },
             }).then((response) => {
-                expect(response.status).to.eq(200);
+                expect(response.status).to.eq(201);
                 expect(response.body.result.status).to.eq(200);
+                expect(response.body).to.have.property("uuid");
                 this.uuid.pricing = response.body.uuid;
             });
         })
     }
 
     createSOWContract() {
-        // Make sure a client, estimation pricing exist before creating SOW Contract
-        cy.wrap(this.uuid.client).should('exist');
-        cy.wrap(this.uuid.estimation).should('exist');
-        cy.wrap(this.uuid.pricing).should('exist');
-
         // API endpoint to create a SOW Contract
         const url = `${this.backendAPIBaseURL}${this.apiEndpoints.sowContract}`;
 
+        console.log('------- contractSOW Create endpoing', url)
         // Get access token
         this.getAccessToken().then((accessToken) => {
-
-            // Create a new form data payload
-            const formData = new FormData();
-            formData.append('contractsow_name', 'Cypress SOW Contract');
-            formData.append('total_contract_amount', '339173.12');
-            formData.append('start_date', '2025-01-01');
-            formData.append('end_date', '2025-12-31');
-            formData.append('payment_term_contract', 'Net 30');
-            formData.append('contractsow_type', 'TIME AND MATERIAL');
-            formData.append('client', this.uuid.client);
-            formData.append('pricing', this.uuid.pricing);
-            formData.append('estimation', this.uuid.estimation);
-            formData.append('doc_contract_amount', '0');
-            formData.append('doc_start_date', '');
-            formData.append('doc_end_date', '');
-            formData.append('extension_sow_contract', 'null');
-
             // Get SOW Contract fiel and encode it in binary and append to form data
-            cy.fixture('test-documents/sow-contract-file.pdf', { encoding: 'binary' }).then((body) => {
-                formData.append('file', new Blob([body], { type: 'application/pdf' }));
+            cy.fixture('test-documents/sow-contract-file.pdf', 'binary')
+                .then(Cypress.Blob.binaryStringToBlob)
+                .then((fileBlob) => {
+                    const fileWithMimeType = new Blob([fileBlob], { type: 'application/pdf' });
 
-                // Finally, request to create SOW Contract API
-                cy.request({
-                    method: 'POST',
-                    url: url,
-                    body: formData,
-                    headers: {
-                      'Content-Type': 'multipart/form-data',
-                      Authorization: `Bearer ${accessToken}`
-                    },
-                  }).then((response) => {
-                    expect(response.status).to.eq(200);
-                    expect(response.body.result.status).to.eq(200);
-                    this.uuid.sowContract = response.body.uuid;
-                  });
-            });
+                    // Construct formData to send as payload
+                    const formData = new FormData();
+                    const payload = this.requestPayloads["sow-contract-create"];
+
+                    // formData.append('file', fileWithMimeType, 'sow-contract-file.pdf');
+                    Object.entries(payload).forEach(([key, value]) => {
+                        formData.append(key, value);
+                    })
+                    formData.append('client', this.uuid.client);
+                    formData.append('estimation', this.uuid.estimation);
+                    formData.append('pricing', this.uuid.pricing);
+
+                    // Finally, request to create SOW Contract API
+                    cy.request({
+                        method: 'POST',
+                        url: url,
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                        },
+                    }).then((response) => {
+                        console.log('--------SOW Contract response----------\n', response);
+                        console.log(response);
+                        expect(response.status).to.eq(201);
+                        expect(response.body).to.have.property("uuid");
+                        this.uuid.sowContract = response.body.uuid;
+                    });
+                });
         });
     }
 
     createAllocation() {
-        cy.wrap(this.uuid.client).should('exist');
-        cy.wrap(this.uuid.estimation).should('exist');
-        cy.wrap(this.uuid.pricing).should('exist');
-        cy.wrap(this.uuid.sowContract).should('exist');
         const url = `${this.backendAPIBaseURL}${this.apiEndpoints.allocation}`;
         this.getAccessToken().then((accessToken) => {
             cy.request({
@@ -180,7 +205,7 @@ class ProgrammaticTestSetup {
                     estimation: this.uuid.estimation,
                     contract_sow: this.uuid.sowContract,
                 },
-            }).then((response) => {     
+            }).then((response) => {
                 expect(response.status).to.eq(200);
                 expect(response.body.result.status).to.eq(200);
                 this.uuid.allocation = response.body.uuid;
