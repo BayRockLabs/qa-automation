@@ -30,3 +30,10 @@ export const adjustUserRolesAccordingToEnvironment = (userRoles) => {
     const stringToAppend = Cypress.env('ENVIRONMENT') === 'demo' ? '_demo' : '';
     return (userRoles + stringToAppend);
 }
+
+export const arrayBufferToJSON = (buffer) => {
+    const decoder = new TextDecoder('utf-8');
+    const decodedString = decoder.decode(arrayBuffer);
+    const decodedResponse = JSON.parse(decodedString);
+    return decodedResponse;
+}

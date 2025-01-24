@@ -1,4 +1,4 @@
-import { access } from "fs";
+import { arrayBufferToJSON } from "../utils/common";
 
 class ProgrammaticTestSetup {
     constructor() {
@@ -19,9 +19,6 @@ class ProgrammaticTestSetup {
         };
         this.uuid = {};
         this.requestPayloads = {};
-        this.errorMessages = {
-            clientAlreadyExists: "Client with this name already exists.",
-        }
     }
 
     login(user) {
@@ -179,10 +176,7 @@ class ProgrammaticTestSetup {
                         body: formData,
                     }).then((response) => {
                         expect(response.status).to.eq(201);
-                        const arrayBuffer = response.body;
-                        const decoder = new TextDecoder('utf-8');
-                        const decodedString = decoder.decode(arrayBuffer);
-                        const decodedResponse = JSON.parse(decodedString);
+                        const decodedResponse = arrayBufferToJSON(response.body);
                         expect(decodedResponse).to.have.property("uuid");
                         this.uuid.sowContract = decodedResponse.uuid;
                     });
@@ -206,8 +200,11 @@ class ProgrammaticTestSetup {
                     contract_sow: this.uuid.sowContract,
                 },
             }).then((response) => {
-                expect(response.status).to.eq(200);
+                expect(response.status).to.eq(201);
                 expect(response.body.result.status).to.eq(200);
+                expect(response.body).to.have.property("uuid");
+                expect(response.body.client).to.eq(this.uuid.client);
+                expect(response.body.estimation).to.eq(this.uuid.estimation);
                 this.uuid.allocation = response.body.uuid;
             });
         });
