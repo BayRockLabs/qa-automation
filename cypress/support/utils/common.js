@@ -33,7 +33,7 @@ export const adjustUserRolesAccordingToEnvironment = (userRoles) => {
 
 export const arrayBufferToJSON = (buffer) => {
     const decoder = new TextDecoder('utf-8');
-    const decodedString = decoder.decode(arrayBuffer);
+    const decodedString = decoder.decode(buffer);
     const decodedResponse = JSON.parse(decodedString);
     return decodedResponse;
 }
