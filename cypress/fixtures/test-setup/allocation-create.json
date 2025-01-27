@@ -1,17 +1,8 @@
 {
-    "uuid": "b7d98288-56d7-4466-a248-070619ac3a14",
-    "contractsow_name": "Cypress SOW Conract",
-    "estimation_name": "Cypress Estimation",
-    "start_date": "2025-01-01",
-    "end_date": "2025-12-31",
-    "date_created": "2025-01-24T10:58:46.810323Z",
-    "date_updated": "2025-01-24T10:58:46.810351Z",
-    "username_created": "Jasjaap Singh Dua",
-    "username_updated": "Jasjaap Singh Dua",
     "name": "Cypress Allocation",
-    "total_billable_hours": 3808.0,
-    "total_cost_hours": 3808.0,
-    "total_unplanned_hours": 0.0,
+    "total_billable_hours": 3808,
+    "total_cost_hours": 3808,
+    "total_unplanned_hours": 0,
     "allocations_count": 3,
     "resource_data": [
         {
@@ -38,29 +29,12 @@
             "role": "Product Manager",
             "billable_hours": 2088,
             "cost_hours": 2088,
-            "resource_id": "BRL02",
-            "resource_name": "Aarushi Arora ",
+            "resource_id": "BRL15",
+            "resource_name": "Angad Kanwar",
             "unplanned_hours": 0,
             "start_date": "2024-12-31T18:30:00.000Z",
             "end_date": "2025-12-31T18:29:59.999Z"
         }
     ],
-    "approver": [
-        {
-            "approver_id": "BRL75",
-            "approver_name": "Jasjaap Singh Dua"
-        }
-    ],
-    "contract_sow": "9ff7dcb8-35b8-4235-917d-1ea486065e13",
-    "estimation": "0ec88ce5-b249-4abb-b906-c1f65c75facc",
-    "client": "18c76200-8fe0-4985-9eeb-e13454d791d4",
-    "result": {
-        "success": "Valid access token",
-        "status": 200,
-        "user_roles": [
-            "c2c_super_admin_demo"
-        ],
-        "username": "Jasjaap Singh Dua",
-        "user_email": "jasjaap.s@bayrocklabs.com"
-    }
+    "approver": []
 }
