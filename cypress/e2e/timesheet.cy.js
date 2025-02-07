@@ -1,20 +1,23 @@
-import { ProgrammaticTestSetup } from '../support/actions/setup';
+import { ProgrammaticTestSetup } from "../support/actions/setup";
+import { Timesheet } from "../support/pages/timesheet";
 
-const setup = new ProgrammaticTestSetup();
-const user = Cypress.env('USER');
+const testSetup = new ProgrammaticTestSetup();
+const timesheetTest = new Timesheet();
+const user = Cypress.env("USER");
 
-describe('Programmatic Test Setup', () => {
-    before(() => {
-        setup.login(user);
-        setup.loadSetupData();
-        setup.deleteClient('cypress client');
-        setup.createClient();
-        setup.createEstimation();
-        setup.createPricing();
-        setup.createSOWContract();
-    })
+describe("Timesheet recall and approval", () => {
+  before(() => {
+    testSetup.login(user);
+    testSetup.loadSetupData();
+    testSetup.deleteClient("cypress client");
+    testSetup.createClient();
+    testSetup.createEstimation();
+    testSetup.createPricing();
+    testSetup.createSOWContract();
+    testSetup.createAllocation();
+  });
 
-    it("Checks if the setup is done", () => {
-
-    })
-})
+  it("Checks if the setup is done", () => {
+    
+  });
+});

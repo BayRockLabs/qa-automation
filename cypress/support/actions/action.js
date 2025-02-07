@@ -6,215 +6,209 @@
 import "cypress-real-events";
 
 class Action {
-    constructor() {
-        this.element = null;
-    }
+  constructor() {
+    this.element = null;
+  }
 
-    login(user) {
-        this.element = cy.login(user);
-        return this;
-    }
+  login(user) {
+    this.element = cy.login(user);
+    return this;
+  }
 
-    reload() {
-        this.element = cy.reload();
-        return this;
-    }
+  reload() {
+    this.element = cy.reload();
+    return this;
+  }
 
-    url() {
-        this.element = cy.url();
-        return this;
-    }
-    
-    visit(url) {
-        this.element = cy.visit(url);
-        return this;
-    }
+  url() {
+    this.element = cy.url();
+    return this;
+  }
 
-    click(...args) {
-        this.element.click(...args);
-        return this;
-    }
+  visit(url) {
+    this.element = cy.visit(url);
+    return this;
+  }
 
-    get(...args) {
-        this.element = cy.get(...args);
-        return this;
-    }
+  click(...args) {
+    this.element.click(...args);
+    return this;
+  }
 
-    eq(index) {
-        this.element.eq(index);
-        return this;
-    }
+  get(...args) {
+    this.element = cy.get(...args);
+    return this;
+  }
 
-    should(...args){
-        this.element.should(...args);
-        return this;
-    }
+  eq(index) {
+    this.element.eq(index);
+    return this;
+  }
 
-    and(...args) {
-        this.element.and(...args);
-        return this;
-    }
+  should(...args) {
+    this.element.should(...args);
+    return this;
+  }
 
-    contains(...args) {
-        this.element.contains(...args);
-        return this;
-    }
+  and(...args) {
+    this.element.and(...args);
+    return this;
+  }
 
-    xpath(...args) {
-        this.element = cy.xpath(...args);
-        return this;
-    }
+  contains(...args) {
+    this.element.contains(...args);
+    return this;
+  }
 
-    type(...args) {
-        this.element.type(...args);
-        return this;
-    }
+  xpath(...args) {
+    this.element = cy.xpath(...args);
+    return this;
+  }
 
-    clear(...args) {
-        this.element.clear(...args);
-        return this;
-    }
+  type(...args) {
+    this.element.type(...args);
+    return this;
+  }
 
-    scrollIntoView(...args) {
-        this.element.scrollIntoView(...args);
-        return this;
-    }
+  clear(...args) {
+    this.element.clear(...args);
+    return this;
+  }
 
-    siblings(...args) {
-        this.element.siblings(...args);
-        return this;
-    }
+  scrollIntoView(...args) {
+    this.element.scrollIntoView(...args);
+    return this;
+  }
 
-    /**
-     * 
-     * Select an @element that has the text @label on it - for exact matches.
-     */
-    getElementMatching(element, label) {
-        const regex = new RegExp(`^${label}$`);
-        this.element = cy.get(element).contains(regex)
-        return this;
-    }
+  siblings(...args) {
+    this.element.siblings(...args);
+    return this;
+  }
 
-    /**
-     * 
-     * Select @option from a dropdown menu
-     */
-    selectFromDropdown(option) {
-        this
-            .click()
-            .getElementMatching('li', option)
-            .element
-            .click();
-        return this;
-    }
+  /**
+   *
+   * Select an @element that has the text @label on it - for exact matches.
+   */
+  getElementMatching(element, label) {
+    const regex = new RegExp(`^${label}$`);
+    this.element = cy.get(element).contains(regex);
+    return this;
+  }
 
-    waitFor(milliseconds){
-        this.element = cy.wait(milliseconds);
-        return this;
-    }
+  /**
+   *
+   * Select @option from a dropdown menu
+   */
+  selectFromDropdown(option) {
+    this.click().getElementMatching("li", option).element.click();
+    return this;
+  }
 
-    loadFixture(fixtureName) {
-        return cy.fixture(fixtureName);
-    }
+  waitFor(milliseconds) {
+    this.element = cy.wait(milliseconds);
+    return this;
+  }
 
-    uploadFile(fileName, ...args) {
-            this.element.selectFile(`cypress/fixtures/${fileName}`, ...args);
-    }
+  loadFixture(fixtureName) {
+    return cy.fixture(fixtureName);
+  }
 
-    getAttributeValue(attribute) {
-        if (this.element) {
-            return this
-                .element
-                .invoke('attr', attribute)
-        }
-    }
+  uploadFile(fileName, ...args) {
+    this.element.selectFile(`cypress/fixtures/${fileName}`, ...args);
+  }
 
-    wrap(...args) {
-        this.element = cy.wrap(...args);
-        return this;
+  getAttributeValue(attribute) {
+    if (this.element) {
+      return this.element.invoke("attr", attribute);
     }
+  }
 
-    filter(...args) {
-       this.element = this.element.filter(...args);
-        return this; 
-    }
+  wrap(...args) {
+    this.element = cy.wrap(...args);
+    return this;
+  }
 
-    getUserRoles() {
-        return cy.getUserRoles();
-    }
+  filter(...args) {
+    this.element = this.element.filter(...args);
+    return this;
+  }
 
-    getUserPermissions(...args) {
-        this.element = cy.getUserPermissions(...args);
-        return this;
-    }
+  getUserRoles() {
+    return cy.getUserRoles();
+  }
 
-    then(...args) {
-        this.element = this.element.then(...args);
-        return this;
-    }
+  getUserPermissions(...args) {
+    this.element = cy.getUserPermissions(...args);
+    return this;
+  }
 
-    log(...args) {
-        this.element = cy.log(...args);
-        return this;
-    }
+  then(...args) {
+    this.element = this.element.then(...args);
+    return this;
+  }
 
-    as(...args) {
-        this.element = this.element.as(...args);
-        return this;
-    }
+  log(...args) {
+    this.element = cy.log(...args);
+    return this;
+  }
 
-    trigger(...args) {
-        this.element = this.element.trigger(...args);
-        return this;
-    }
+  as(...args) {
+    this.element = this.element.as(...args);
+    return this;
+  }
 
-    window(...args) {
-        this.element = cy.window(...args);
-        return this;
-    }
+  trigger(...args) {
+    this.element = this.element.trigger(...args);
+    return this;
+  }
 
-    clearSessionData() {
-        this.element = cy.clearSessionData();
-        return this;
-    }
+  window(...args) {
+    this.element = cy.window(...args);
+    return this;
+  }
 
-    realHover(...args) {
-        this.element = this.element.realHover(...args);
-        return this;
-    }
+  clearSessionData() {
+    this.element = cy.clearSessionData();
+    return this;
+  }
 
-    parent(...args){
-        this.element = this.element.parent(...args);
-        return this;
-    }
+  realHover(...args) {
+    this.element = this.element.realHover(...args);
+    return this;
+  }
 
-    invoke(...args){
-        this.element = this.element.invoke(...args);
-        return this;
-    }
+  parent(...args) {
+    this.element = this.element.parent(...args);
+    return this;
+  }
 
-    once(...args){
-        this.element = cy.once(...args);
-        return this;
-    }
+  invoke(...args) {
+    this.element = this.element.invoke(...args);
+    return this;
+  }
 
-    assignUserRole(email, role) {
-        this.element = cy.assignUserRole(email, role);
-        return this;
-    }
+  once(...args) {
+    this.element = cy.once(...args);
+    return this;
+  }
 
-    removeUserRole(email, role) {
-        cy.removeUserRole(email, role);
-    }
+  assignUserRole(email, role) {
+    this.element = cy.assignUserRole(email, role);
+    return this;
+  }
 
-    removeAllUserRoles(...args) {
-        cy.removeAllUserRoles(...args);
-    }
+  removeUserRole(email, role) {
+    cy.removeUserRole(email, role);
+  }
 
-    debug(...args) {
-        this.element.debug(...args);
-        return this;
-    }
+  removeAllUserRoles(...args) {
+    cy.removeAllUserRoles(...args);
+  }
+
+  debug(...args) {
+    this.element.debug(...args);
+    return this;
+  }
 }
 
 const action = new Action();

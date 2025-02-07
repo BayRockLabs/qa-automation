@@ -1,14 +1,14 @@
 {
-    "clientManagement" : "/c2c_service/client",
-    "estimation" : "/c2c_service/estimation",
-    "pricing" : "/c2c_service/pricing",
-    "sowcontract" : "/c2c_service/contractsow",
-    "milestone" : "/c2c_service/milestones",
-    "purchaseOrder" : "/c2c_service/purchase_orders_client_all",
-    "allocation" : "/c2c_service/allocation",
-    "invoice" : "/c2c_service/invoices/client",
-    "timesheet" : "/c2c_service/employee-timesheets",
-    "timesheetManagerNotificationCount" : "/c2c_service/ts-manager-notification-count",
-    "managerView" : "/c2c_service/resource/timesheet",
-    "autoSearch" : "/c2c_service/auto-search"
+  "clientManagement": "/c2c_service/client",
+  "estimation": "/c2c_service/estimation",
+  "pricing": "/c2c_service/pricing",
+  "sowcontract": "/c2c_service/contractsow",
+  "milestone": "/c2c_service/milestones",
+  "purchaseOrder": "/c2c_service/purchase_orders_client_all",
+  "allocation": "/c2c_service/allocation",
+  "invoice": "/c2c_service/invoices/client",
+  "timesheet": "/c2c_service/employee-timesheets",
+  "timesheetManagerNotificationCount": "/c2c_service/ts-manager-notification-count",
+  "managerView": "/c2c_service/resource/timesheet",
+  "autoSearch": "/c2c_service/auto-search"
 }

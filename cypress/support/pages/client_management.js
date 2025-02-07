@@ -1,365 +1,269 @@
-import { Action } from '../actions/action';
+import { Action } from "../actions/action";
 
 class ClientManagement {
-    elements = {
-        clientManagementHeader : () => this.action.get('p').contains('Client Management'),
-        addClientHeader : () => this.action.get('span').contains('Add Client'),
-        addClientPopupButton : () => this.action.get('button').contains( 'Add Client'),
-        clientNameInput : () => this.action.get('#outlined-adornment-clientname'),
-        clientAddressInput : () => this.action.get('#outlined-adornment-clientaddress'),
-        addressLeadingTrailingSpacesWarning : () => this
-                                                    .action
-                                                    .get('p').contains(this.streetAddressLeadingTrailingSpacesWarning),
-        randomCharactersInAddressFieldWarning : () => this
-                                                    .action
-                                                    .get('p').contains(this.randomCharactersInAddressFieldWarning),
-        countrySelect : () => this.action.get('#country-select'),
-        stateSelect : () => this.action.get('#state-select'),
-        citySelect : () => this.action.get('#city-select'),
-        clientZipCodeInput : () => this.action.get('#outlined-adornment-zipcode'),
-        invalidZipCodeWarning : () => this
-                                        .action
-                                        .get('p').contains(this.invalidZipCodeWarning),
-        nextButton : () => this.action.get('button').contains('Next'),
-        contractNameInput : () => this.action.get('#outlined-adornment-contractname'),
-        contractTypeSelect : () => this.action.get('#demo-simple-select'),
-        contractStartDateInput : () => this.action.get('[placeholder="yyyy-mm-dd"]').eq(0),
-        contractEndDateInput : () => this.action.get('[placeholder="yyyy-mm-dd"]').eq(1),
-        createClientButton : () => this.action.get('button').contains('Create Client'),
-        clientDeleteButton : (clientName) => this
-                                            .action
-                                            .xpath(`//span[text()="${clientName}"]/ancestor::td/ancestor::tr//td//span//button`),
-        deleteConfirmButton : () => this.action.get('button').contains('Delete'),
-        clientRecord : (clientName) => this.action.get('span').contains(clientName),
-        updateClientButton : () => this.action.get('button').contains('Update Client'),
-        clientDetails : {
-            overviewHeader: () => this.action.get('p').contains('Overview'),
-            clientName : () => this.action.get('p').contains('Client Name').siblings().eq(0),
-            clientAddress : () => this.action.get('p').contains('Client Address').siblings().eq(0),
-            clientCity : () => this.action.get('p').contains('City').siblings().eq(0),
-            clientState : () => this.action.get('p').contains('State').siblings().eq(0),
-            clientCountry : () => this.action.get('p').contains('Country').siblings().eq(0),
-            clientZipCode : () => this.action.get('p').contains('ZipCode').siblings().eq(0),
-        },
-        contractDetails : {
-            contractName : () => this.action.get('p').contains('Contract Name').siblings().eq(0),
-            contractType : () => this.action.get('p').contains('Contract Type').siblings().eq(0),
-            startDate : () => this.action.get('p').contains('Contract Start Date').siblings().eq(0),
-            endDate : () => this.action.get('p').contains('Contract End Date').siblings().eq(0),
-        },
-        globalPaymentDetails : {
-            clientPaymentTerms : () => this.action.get('p').contains('Client Payment Terms'),
-        },
-        editButton : () => this.action.get('button').contains('Edit'),
-        editClientHeader: () => this.action.get('span').contains('Edit Client'),
-    }
+  elements = {
+    clientManagementHeader: () =>
+      this.action.get("p").contains("Client Management"),
+    addClientHeader: () => this.action.get("span").contains("Add Client"),
+    addClientPopupButton: () =>
+      this.action.get("button").contains("Add Client"),
+    clientNameInput: () => this.action.get("#outlined-adornment-clientname"),
+    clientAddressInput: () =>
+      this.action.get("#outlined-adornment-clientaddress"),
+    addressLeadingTrailingSpacesWarning: () =>
+      this.action
+        .get("p")
+        .contains(this.streetAddressLeadingTrailingSpacesWarning),
+    randomCharactersInAddressFieldWarning: () =>
+      this.action.get("p").contains(this.randomCharactersInAddressFieldWarning),
+    countrySelect: () => this.action.get("#country-select"),
+    stateSelect: () => this.action.get("#state-select"),
+    citySelect: () => this.action.get("#city-select"),
+    clientZipCodeInput: () => this.action.get("#outlined-adornment-zipcode"),
+    invalidZipCodeWarning: () =>
+      this.action.get("p").contains(this.invalidZipCodeWarning),
+    nextButton: () => this.action.get("button").contains("Next"),
+    contractNameInput: () =>
+      this.action.get("#outlined-adornment-contractname"),
+    contractTypeSelect: () => this.action.get("#demo-simple-select"),
+    contractStartDateInput: () =>
+      this.action.get('[placeholder="yyyy-mm-dd"]').eq(0),
+    contractEndDateInput: () =>
+      this.action.get('[placeholder="yyyy-mm-dd"]').eq(1),
+    createClientButton: () =>
+      this.action.get("button").contains("Create Client"),
+    clientDeleteButton: (clientName) =>
+      this.action.xpath(
+        `//span[text()="${clientName}"]/ancestor::td/ancestor::tr//td//span//button`,
+      ),
+    deleteConfirmButton: () => this.action.get("button").contains("Delete"),
+    clientRecord: (clientName) => this.action.get("span").contains(clientName),
+    updateClientButton: () =>
+      this.action.get("button").contains("Update Client"),
+    clientDetails: {
+      overviewHeader: () => this.action.get("p").contains("Overview"),
+      clientName: () =>
+        this.action.get("p").contains("Client Name").siblings().eq(0),
+      clientAddress: () =>
+        this.action.get("p").contains("Client Address").siblings().eq(0),
+      clientCity: () => this.action.get("p").contains("City").siblings().eq(0),
+      clientState: () =>
+        this.action.get("p").contains("State").siblings().eq(0),
+      clientCountry: () =>
+        this.action.get("p").contains("Country").siblings().eq(0),
+      clientZipCode: () =>
+        this.action.get("p").contains("ZipCode").siblings().eq(0),
+    },
+    contractDetails: {
+      contractName: () =>
+        this.action.get("p").contains("Contract Name").siblings().eq(0),
+      contractType: () =>
+        this.action.get("p").contains("Contract Type").siblings().eq(0),
+      startDate: () =>
+        this.action.get("p").contains("Contract Start Date").siblings().eq(0),
+      endDate: () =>
+        this.action.get("p").contains("Contract End Date").siblings().eq(0),
+    },
+    globalPaymentDetails: {
+      clientPaymentTerms: () =>
+        this.action.get("p").contains("Client Payment Terms"),
+    },
+    editButton: () => this.action.get("button").contains("Edit"),
+    editClientHeader: () => this.action.get("span").contains("Edit Client"),
+  };
 
-    constructor() {
-        this.url = '/dashboard';
-        this.action = new Action();
-        this.streetAddressLeadingTrailingSpacesWarning = 'Street address should not have leading or trailing spaces.';
-        this.randomCharactersInAddressFieldWarning = 'Address appears to contain random characters. Please enter a valid address.';
-        this.invalidZipCodeWarning = 'Zip code should be min 5 or max 8 digits (alphanumeric) long.';
-    }
+  constructor() {
+    this.url = "/dashboard";
+    this.action = new Action();
+    this.streetAddressLeadingTrailingSpacesWarning =
+      "Street address should not have leading or trailing spaces.";
+    this.randomCharactersInAddressFieldWarning =
+      "Address appears to contain random characters. Please enter a valid address.";
+    this.invalidZipCodeWarning =
+      "Zip code should be min 5 or max 8 digits (alphanumeric) long.";
+  }
 
-    visit(){
-        this.action.visit(this.url);
-    }
+  visit() {
+    this.action.visit(this.url);
+  }
 
-    openAddClientPopup(){
-        this
-            .elements
-            .addClientPopupButton()
-            .click();
-    }
+  openAddClientPopup() {
+    this.elements.addClientPopupButton().click();
+  }
 
-    fillClientName(clientName){
-        this
-            .elements
-            .clientNameInput()
-            .type(clientName);
-    }
+  fillClientName(clientName) {
+    this.elements.clientNameInput().type(clientName);
+  }
 
-    fillClientAddress(clientAddress){
-        this
-            .elements
-            .clientAddressInput()
-            .type(clientAddress);
-    }
+  fillClientAddress(clientAddress) {
+    this.elements.clientAddressInput().type(clientAddress);
+  }
 
-    clearClientAddressField() {
-        this
-            .elements
-            .clientAddressInput()
-            .clear();
-    }
+  clearClientAddressField() {
+    this.elements.clientAddressInput().clear();
+  }
 
-    selectClientCountry(clientCountry){
-        this
-            .elements
-            .countrySelect()
-            .selectFromDropdown(clientCountry);
-    }
+  selectClientCountry(clientCountry) {
+    this.elements.countrySelect().selectFromDropdown(clientCountry);
+  }
 
-    selectClientState(clientState){
-        this
-            .elements
-            .stateSelect()
-            .selectFromDropdown(clientState);
-    }
+  selectClientState(clientState) {
+    this.elements.stateSelect().selectFromDropdown(clientState);
+  }
 
-    selectClientCity(clientCity){
-        this
-            .elements
-            .citySelect()
-            .selectFromDropdown(clientCity);
-    }
-    
-    fillClientZipCode(clientZipCode){
-        this
-            .elements
-            .clientZipCodeInput()
-            .type(clientZipCode);
-    }
+  selectClientCity(clientCity) {
+    this.elements.citySelect().selectFromDropdown(clientCity);
+  }
 
-    clearZipCodeField() {
-        this
-            .elements
-            .clientZipCodeInput()
-            .clear();
-    }
+  fillClientZipCode(clientZipCode) {
+    this.elements.clientZipCodeInput().type(clientZipCode);
+  }
 
-    clickNextButton(){
-        this
-            .elements
-            .nextButton()
-            .click();
-    }
+  clearZipCodeField() {
+    this.elements.clientZipCodeInput().clear();
+  }
 
-    fillContractName(orgLevelContractName){
-        this
-            .elements
-            .contractNameInput()
-            .type(orgLevelContractName);
-    }
+  clickNextButton() {
+    this.elements.nextButton().click();
+  }
 
-    clearContractNameField() {
-        this
-            .elements
-            .contractNameInput()
-            .clear();
-    }
+  fillContractName(orgLevelContractName) {
+    this.elements.contractNameInput().type(orgLevelContractName);
+  }
 
-    selectContractType(contractType){
-        this
-            .elements
-            .contractTypeSelect()
-            .selectFromDropdown(contractType);
-    }
+  clearContractNameField() {
+    this.elements.contractNameInput().clear();
+  }
 
-    fillContractStartDate(date){
-        this
-            .elements
-            .contractStartDateInput()
-            .type(date);
-    }
+  selectContractType(contractType) {
+    this.elements.contractTypeSelect().selectFromDropdown(contractType);
+  }
 
-    clearStartDateField() {
-        this
-            .elements
-            .contractStartDateInput()
-            .clear();
-    }
+  fillContractStartDate(date) {
+    this.elements.contractStartDateInput().type(date);
+  }
 
-    fillContractEndDate(date){
-        this
-            .elements
-            .contractEndDateInput()
-            .type(date);
-    }
+  clearStartDateField() {
+    this.elements.contractStartDateInput().clear();
+  }
 
-    clearEndDateField() {
-        this
-            .elements
-            .contractEndDateInput()
-            .clear();
-    }
+  fillContractEndDate(date) {
+    this.elements.contractEndDateInput().type(date);
+  }
 
-    clickCreateClientButton(){
-        this
-            .elements
-            .createClientButton()
-            .click();
-    }
+  clearEndDateField() {
+    this.elements.contractEndDateInput().clear();
+  }
 
-    updateClient() {
-        this
-            .elements
-            .updateClientButton()
-            .click();
-    }
+  clickCreateClientButton() {
+    this.elements.createClientButton().click();
+  }
 
-    
-    deleteClient(clientName){
-        this.action.waitFor(2000)
-        this
-            .elements
-            .clientDeleteButton(clientName)
-            .click();
-        this
-            .elements
-            .deleteConfirmButton()
-            .click();
-    }
+  updateClient() {
+    this.elements.updateClientButton().click();
+  }
 
-    openEditClientPopup(clientName){
-        this
-            .elements
-            .editButton()
-            .click();
-    }
+  deleteClient(clientName) {
+    this.action.waitFor(2000);
+    this.elements.clientDeleteButton(clientName).click();
+    this.elements.deleteConfirmButton().click();
+  }
 
-    expectEditClientHeaderVisible(){
-        this
-            .elements
-            .editClientHeader()
-            .should('be.visible');
-    }
-    
-    expectClientAdded(clientName){
-        this
-            .elements
-            .clientRecord(clientName)
-            .should('be.visible');
-    }
+  openEditClientPopup(clientName) {
+    this.elements.editButton().click();
+  }
 
-    expectClientDeleted(clientName){
-        this
-            .elements
-            .clientRecord(clientName)
-            .should('not.exist');
-    }
+  expectEditClientHeaderVisible() {
+    this.elements.editClientHeader().should("be.visible");
+  }
 
-    expectClientManagementHeaderVisible(){
-        this
-            .elements
-            .clientManagementHeader()
-            .should('be.visible');
-    }
+  expectClientAdded(clientName) {
+    this.elements.clientRecord(clientName).should("be.visible");
+  }
 
-    expectAddClientHeaderVisible(){
-        this
-            .elements
-            .addClientHeader()
-            .should('be.visible');
-    }
-    
-    expectRandomCharactersInAddressFieldWarning(){
-        this
-            .elements
-            .randomCharactersInAddressFieldWarning()
-            .should('be.visible');
-    }
+  expectClientDeleted(clientName) {
+    this.elements.clientRecord(clientName).should("not.exist");
+  }
 
-    expectLeadingTrailingSpacesWarning(){
-        this
-            .elements
-            .addressLeadingTrailingSpacesWarning()
-            .should('be.visible');
-    }
+  expectClientManagementHeaderVisible() {
+    this.elements.clientManagementHeader().should("be.visible");
+  }
 
-    expectInvalidZipCodeWarning() {
-        this.action.waitFor(2000);
-        this
-            .elements
-            .invalidZipCodeWarning()
-            .should('be.visible');
-    }
+  expectAddClientHeaderVisible() {
+    this.elements.addClientHeader().should("be.visible");
+  }
 
-    openClientDetails(clientName){
-        this.visit();
-        this
-            .elements
-            .clientRecord(clientName)
-            .click();
-    }
+  expectRandomCharactersInAddressFieldWarning() {
+    this.elements.randomCharactersInAddressFieldWarning().should("be.visible");
+  }
 
-    expectClientNameToBe(clientName){
-        this
-            .elements
-            .clientDetails.clientName()
-            .should('contain', clientName);
-    }
+  expectLeadingTrailingSpacesWarning() {
+    this.elements.addressLeadingTrailingSpacesWarning().should("be.visible");
+  }
 
-    expectClientAddressToBe(clientAddress){
-        this
-            .elements
-            .clientDetails.clientAddress()
-            .should('contain', clientAddress);
-    }
+  expectInvalidZipCodeWarning() {
+    this.action.waitFor(2000);
+    this.elements.invalidZipCodeWarning().should("be.visible");
+  }
 
-    expectClientCityToBe(clientCity){
-        this
-            .elements
-            .clientDetails.clientCity()
-            .should('contain', clientCity);
-    }
+  openClientDetails(clientName) {
+    this.visit();
+    this.elements.clientRecord(clientName).click();
+  }
 
-    expectClientStateToBe(clientState){
-        this
-            .elements
-            .clientDetails.clientState()
-            .should('contain', clientState);
-    }
+  expectClientNameToBe(clientName) {
+    this.elements.clientDetails.clientName().should("contain", clientName);
+  }
 
-    expectClientCountryToBe(clientCountry){
-        this
-            .elements
-            .clientDetails.clientCountry()
-            .should('contain', clientCountry);
-    }
+  expectClientAddressToBe(clientAddress) {
+    this.elements.clientDetails
+      .clientAddress()
+      .should("contain", clientAddress);
+  }
 
-    expectClientZipCodeToBe(clientZipCode){
-        this
-            .elements
-            .clientDetails.clientZipCode()
-            .should('contain', clientZipCode);
-    }
+  expectClientCityToBe(clientCity) {
+    this.elements.clientDetails.clientCity().should("contain", clientCity);
+  }
 
-    expectContractNameToBe(orgLevelContractName){
-        this
-            .elements
-            .contractDetails.contractName()
-            .should('contain', orgLevelContractName);
-    }
+  expectClientStateToBe(clientState) {
+    this.elements.clientDetails.clientState().should("contain", clientState);
+  }
 
-    expectContractTypeToBe(contractType){
-        this
-            .elements
-            .contractDetails.contractType()
-            .should('contain', contractType);
-    }
+  expectClientCountryToBe(clientCountry) {
+    this.elements.clientDetails
+      .clientCountry()
+      .should("contain", clientCountry);
+  }
 
-    expectContractStartDateToBe(startDate){
-        this
-            .elements
-            .contractDetails.startDate()
-            .should('contain', startDate);
-    }
+  expectClientZipCodeToBe(clientZipCode) {
+    this.elements.clientDetails
+      .clientZipCode()
+      .should("contain", clientZipCode);
+  }
 
-    expectContractEndDateToBe(endDate){
-        this
-            .elements
-            .contractDetails.endDate()
-            .should('contain', endDate);
-    }
+  expectContractNameToBe(orgLevelContractName) {
+    this.elements.contractDetails
+      .contractName()
+      .should("contain", orgLevelContractName);
+  }
 
-    expectOverviewHeaderVisible() {
-        this
-            .elements
-            .clientDetails.overviewHeader()
-            .should('be.visible');
-    }
+  expectContractTypeToBe(contractType) {
+    this.elements.contractDetails
+      .contractType()
+      .should("contain", contractType);
+  }
+
+  expectContractStartDateToBe(startDate) {
+    this.elements.contractDetails.startDate().should("contain", startDate);
+  }
+
+  expectContractEndDateToBe(endDate) {
+    this.elements.contractDetails.endDate().should("contain", endDate);
+  }
+
+  expectOverviewHeaderVisible() {
+    this.elements.clientDetails.overviewHeader().should("be.visible");
+  }
 }
 
 export { ClientManagement };

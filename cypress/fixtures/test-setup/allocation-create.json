@@ -1,42 +1,20 @@
 {
-    "name": "Cypress Allocation",
-    "total_billable_hours": 3808,
-    "total_cost_hours": 3808,
-    "total_unplanned_hours": 0,
-    "allocations_count": 3,
-    "resource_data": [
-        {
-            "role": "Data Engineer",
-            "billable_hours": 1032,
-            "cost_hours": 1032,
-            "resource_id": "BRL85",
-            "resource_name": "Logeshwaran . C",
-            "unplanned_hours": 0,
-            "start_date": "2024-12-31T18:30:00.000Z",
-            "end_date": "2025-06-30T18:29:59.999Z"
-        },
-        {
-            "role": "Cloud-Devops Engineer",
-            "billable_hours": 688,
-            "cost_hours": 688,
-            "resource_id": "BRL145",
-            "resource_name": "Syamasuresh Mallireddi",
-            "unplanned_hours": 0,
-            "start_date": "2024-12-31T18:30:00.000Z",
-            "end_date": "2025-04-30T18:29:59.999Z"
-        },
-        {
-            "role": "Product Manager",
-            "billable_hours": 2088,
-            "cost_hours": 2088,
-            "resource_id": "BRL15",
-            "resource_name": "Angad Kanwar",
-            "unplanned_hours": 0,
-            "start_date": "2024-12-31T18:30:00.000Z",
-            "end_date": "2025-12-31T18:29:59.999Z"
-        }
-    ],
-    "approver": [
-        
-    ]
+  "name": "Cypress Allocation",
+  "total_billable_hours": 3808,
+  "total_cost_hours": 3808,
+  "total_unplanned_hours": 0,
+  "allocations_count": 3,
+  "resource_data": [
+    {
+      "role": "Data Engineer",
+      "billable_hours": 1032,
+      "cost_hours": 1032,
+      "resource_id": "C2CDEMO",
+      "resource_name": "C2C Demo",
+      "unplanned_hours": 0,
+      "start_date": "2024-12-31T18:30:00.000Z",
+      "end_date": "2025-06-30T18:29:59.999Z"
+    }
+  ],
+  "approver": []
 }

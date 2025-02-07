@@ -1,26 +1,23 @@
 class BasePage {
-    elements = {
-        getButtonContaining: (buttonText) => cy.get('button').contains(buttonText),
-    }
+  elements = {
+    getButtonContaining: (buttonText) => cy.get("button").contains(buttonText),
+  };
 
-    urls = {}
+  urls = {};
 
-    loadUrls() {
-        cy.fixture('urls.json').then((urlsData) => {
-            this.urls = urlsData;
-        })
-    }
+  loadUrls() {
+    cy.fixture("urls.json").then((urlsData) => {
+      this.urls = urlsData;
+    });
+  }
 
-    visit() {
-        cy.visit(this.urls.login);
-    }
+  visit() {
+    cy.visit(this.urls.login);
+  }
 
-    clickButtonContaining(buttonText) {
-        this
-            .elements
-            .getButtonContaining(buttonText)
-            .click();
-    }
+  clickButtonContaining(buttonText) {
+    this.elements.getButtonContaining(buttonText).click();
+  }
 }
 
-export {BasePage};
+export { BasePage };
