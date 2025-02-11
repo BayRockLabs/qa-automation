@@ -1,4 +1,5 @@
 import { login, logout } from "./utils/auth";
+import { authenticator } from "otplib";
 import Papa from "papaparse";
 
 Cypress.Commands.add("login", (user) => {
@@ -69,27 +70,51 @@ Cypress.Commands.add("logout", () => {
   logout();
 });
 
-// Cypress.Commands.add('waitForRoleUpdate', (expectedRoles, removal = false, timeout = 20000, interval = 5000) => {
-//     const startTime = Date.now();
-//     const userCredentials = Cypress.env('USER');
-//     const checkRoles = () => {
-//         return cy.login(userCredentials).then((userRoles) => {
-//             if (!removal && userRoles.includes(expectedRoles)) {
-//                 return cy.wrap(true);
-//             } else if (removal && userRoles.length === 0) {
-//                 return cy.wrap(true);
-//             }
-//             if (Date.now() - startTime > timeout) {
-//                 throw new Error('Roles did not update in time');
-//             }
-//             cy.wait(interval).then(checkRoles);
-//         });
-//     };
-//     return checkRoles();
-// });
 
-// Cypress.Commands.add('getUserRoles', () => {
-//     cy.window().its('localStorage').then((localStorage) => {
-//         return JSON.parse(localStorage.getItem('userData')).user_roles;
-//     })
-// })
+const validateLocalStorage = localStorage =>
+  Cypress._.some(localStorage, (value, key) =>
+      key.includes('CognitoIdentityServiceProvider'),
+  )
+
+Cypress.Commands.add('getTOTP', () => {
+  const otp = authenticator.generate(Cypress.env('AZURE_SECRET'))
+  return otp
+})
+
+Cypress.Commands.add('sessionLogin', (user) => {
+  cy.clearAllCookies();
+  cy.clearAllLocalStorage();
+  cy.clearAllSessionStorage();
+  cy.loginViaAzureAD(user);
+  return cy.visit('/').then(() => {
+      cy.pause()
+  })
+})
+
+Cypress.Commands.add('loginViaAzureAD', (user) => {
+  cy.intercept('POST', '**/token').as('getToken');
+  cy.origin('https://login.microsoftonline.com/', { args: { user } }, ({ user })  => {
+      cy.visit('/')
+      cy.get("[id='i0116']").type(user.email);
+      cy.get("[id='idSIButton9']").click()
+  })
+
+  const organizationURL = Cypress.env("AUTH_BASE_URL") + "/" + Cypress.env("TENANT_ID") + "/password";
+  cy.origin(organizationURL, { args: { user }}, ({ user }) => {
+      cy.get('#i0118').type(user.password);
+      cy.get('#idSIButton9').click();
+  })
+
+  cy.getTOTP().then((otp1) => {
+      const objOTP = { otp: otp1 }
+      cy.origin('https://login.microsoftonline.com/', { args: objOTP }, ({ otp }) => {
+          cy.log("otp is", otp)
+          cy.get('#idTxtBx_SAOTCC_OTC').type(otp);
+          cy.get('#idSubmit_SAOTCC_Continue').click();
+          cy.get('#idSIButton9').click();
+      })
+      cy.wait('@getToken').then((interception) => {
+        console.log(interception)
+      })
+  })
+})

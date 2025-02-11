@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 
 import { decode } from "jsonwebtoken";
+import { authenticator } from 'otplib';
 
 const authority = Cypress.env("AUTH_BASE_URL") + "/" + Cypress.env("TENANT_ID");
 const clientId = Cypress.env("CLIENT_ID");
@@ -9,8 +10,8 @@ const apiScopes = ["user.read", "openid", "profile", "email"];
 const tenantId = Cypress.env("TENANT_ID");
 const registerUrl = Cypress.env("REGISTER_URL");
 const environment = "login.windows.net";
-let username;
-let password;
+const azureSecret = Cypress.env("AZURE_SECRET");
+const user = Cypress.env("USER")
 
 // Functions to build the required entities for authentication
 const buildAccountEntity = (
@@ -176,31 +177,31 @@ export const login = (user) => {
   cy.logout();
   username = user.email;
   password = user.password;
-  return cy
-    .visit("/login")
-    .request({
-      url: authority + "/oauth2/v2.0/token",
-      method: "POST",
-      body: {
-        grant_type: "password",
-        client_id: clientId,
-        client_secret: clientSecret,
-        username: username,
-        password: password,
-        scope: "user.read openid profile offline_access",
-      },
-      form: true,
-    })
-    .then((response) => {
-      injectTokens(response.body);
-      return cy
-        .window()
-        .its("localStorage")
-        .then((localStorage) => {
-          const userData = JSON.parse(localStorage.getItem("userData"));
-          return userData.user_roles;
-        });
-    });
+  // return cy
+  //   .visit("/login")
+  //   .request({
+  //     url: authority + "/oauth2/v2.0/token",
+  //     method: "POST",
+  //     body: {
+  //       grant_type: "password",
+  //       client_id: clientId,
+  //       client_secret: clientSecret,
+  //       username: username,
+  //       password: password,
+  //       scope: "user.read openid profile offline_access",
+  //     },
+  //     form: true,
+  //   })
+  //   .then((response) => {
+  //     injectTokens(response.body);
+  //     return cy
+  //       .window()
+  //       .its("localStorage")
+  //       .then((localStorage) => {
+  //         const userData = JSON.parse(localStorage.getItem("userData"));
+  //         return userData.user_roles;
+  //       });
+  //   });
 };
 
 export const userData = (accessToken) => {
