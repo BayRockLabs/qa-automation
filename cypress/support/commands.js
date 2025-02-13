@@ -71,50 +71,70 @@ Cypress.Commands.add("logout", () => {
 });
 
 
-const validateLocalStorage = localStorage =>
-  Cypress._.some(localStorage, (value, key) =>
-      key.includes('CognitoIdentityServiceProvider'),
-  )
-
 Cypress.Commands.add('getTOTP', () => {
   const otp = authenticator.generate(Cypress.env('AZURE_SECRET'))
   return otp
 })
 
-Cypress.Commands.add('sessionLogin', (user) => {
+
+function loginViaAAD(user) {
+  const username = user.email;
+  const password = user.password;
+
+  cy.visit('/login')
+  cy.get('p').contains('Login with Microsoft').click()
+
+  // Login to your AAD tenant.
+  cy.origin(
+    'login.microsoftonline.com',
+    {
+      args: {
+        username,
+        password
+      },
+    },
+    ({ username, password }) => {
+      cy.get("[id='i0116']").type(username, {
+        log: false,
+      })
+      cy.get("[id='idSIButton9']").click()
+      cy.get('#i0118').type(password, {
+        log: false,
+      })
+      cy.get('#idSIButton9').click()
+    }
+  )
+
+cy.getTOTP().then((otp) => {
+  cy.origin(
+    'login.microsoftonline.com',
+    {
+      args: {
+        otp
+      },
+    },
+    ({ otp }) => {
+      cy.get('#idTxtBx_SAOTCC_OTC').type(otp);
+      cy.get('#idSubmit_SAOTCC_Continue').click();
+      cy.get('#idSIButton9').click();
+    }
+  )
+})
+}
+
+Cypress.Commands.add('loginToAAD', (user) => {
   cy.clearAllCookies();
   cy.clearAllLocalStorage();
   cy.clearAllSessionStorage();
-  cy.loginViaAzureAD(user);
-  return cy.visit('/').then(() => {
-      cy.pause()
+  const log = Cypress.log({
+    displayName: 'Azure Active Directory Login',
+    message: [`🔐 Authenticating | ${user.email}`],
+    autoEnd: false,
   })
-})
+  log.snapshot('before')
 
-Cypress.Commands.add('loginViaAzureAD', (user) => {
-  cy.intercept('POST', '**/token').as('getToken');
-  cy.origin('https://login.microsoftonline.com/', { args: { user } }, ({ user })  => {
-      cy.visit('/')
-      cy.get("[id='i0116']").type(user.email);
-      cy.get("[id='idSIButton9']").click()
-  })
+  loginViaAAD(user)
 
-  const organizationURL = Cypress.env("AUTH_BASE_URL") + "/" + Cypress.env("TENANT_ID") + "/password";
-  cy.origin(organizationURL, { args: { user }}, ({ user }) => {
-      cy.get('#i0118').type(user.password);
-      cy.get('#idSIButton9').click();
-  })
-
-  cy.getTOTP().then((otp1) => {
-      const objOTP = { otp: otp1 }
-      cy.origin('https://login.microsoftonline.com/', { args: objOTP }, ({ otp }) => {
-          cy.log("otp is", otp)
-          cy.get('#idTxtBx_SAOTCC_OTC').type(otp);
-          cy.get('#idSubmit_SAOTCC_Continue').click();
-          cy.get('#idSIButton9').click();
-      })
-      cy.wait('@getToken').then((interception) => {
-        console.log(interception)
-      })
-  })
+  log.snapshot('after')
+  log.end()
 })
